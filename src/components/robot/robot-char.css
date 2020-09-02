@@ -1,0 +1,72 @@
+.Character-mode {
+    background: white;
+}
+
+.DB{
+    max-height: 500px;
+}
+
+.DB-cls-1 {
+    fill: #fff;
+}
+
+.DB-cls-2 {
+    stroke-miterlimit: 10;
+}
+
+.DB-red {
+    fill: red;
+}
+
+.Spin-anim {
+    animation: App-logo-spin infinite 5s linear;
+}
+
+.Bounce-anim {
+    animation: Simple-bounce infinite 2s ease;
+}
+
+.Wave-anim {
+    animation: Wave infinite 300ms;
+}
+
+.Wave-right {
+    transform-origin: 50% 60%;
+}
+
+.Wave-left {
+    transform-origin: 60% 50%;
+}
+
+@keyframes Simple-bounce {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-0.5vh);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes Wave {
+    0% {
+        transform: rotate(3deg);
+    }
+    50% {
+        transform: rotate(-3deg);
+    }
+    100% {
+        transform: rotate(3deg);
+    }
+}

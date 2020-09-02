@@ -7,6 +7,7 @@ const IndexPage = () => (
   <Layout>
     <Link to='/book-loader'>Book loader</Link><br />
     <Link to="/dashboard/">Dashboard</Link> <br />
+    <Link to="/robot/">Robot</Link> <br />
   </Layout>
 )
 

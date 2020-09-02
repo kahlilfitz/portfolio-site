@@ -13,7 +13,7 @@ const BookCard = (props) => {
 
     return (
         <div class='book-card-container'>
-            <img alt='Book Image' src={imageUrl} />
+            <img alt='Book Cover' src={imageUrl} />
             <div class='book-meta'>
                 <span class='book-title'>{title}</span>
                 <span class='book-author'>{author}</span>

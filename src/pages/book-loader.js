@@ -4,6 +4,7 @@ import BookCard from '../components/book-loader/book-card'
 import { switchMap, catchError } from 'rxjs/operators'
 import { fromFetch } from 'rxjs/fetch'
 import { of } from 'rxjs'
+import { Link } from 'gatsby'
 
 const INITAL_BOOK_DATA = [
     {
@@ -54,6 +55,7 @@ const BookLoader = () => {
     
     return (
         <Layout>
+            <Link to="/">Home</Link>
             <h1>Bookshelf</h1>
             {getBookElements(bookData)}
         </Layout>
