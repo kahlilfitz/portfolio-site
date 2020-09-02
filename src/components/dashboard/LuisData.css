@@ -1,0 +1,38 @@
+.luis-data {
+    width: 464px;
+    height: 233px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.luis-grid {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+}
+
+.luis-label {
+    display: flex;
+    width: 100px;
+    height: 40px;
+    color: #0B9CFF;
+    font-size: 15px;
+    line-height: 15px;
+    text-align: left;
+    align-items: left;
+    margin-bottom: 10px;
+  }
+  
+.luis-speechdata {
+    display: flex;
+    width: 250px;
+    height: 40px;
+    font-size: 15px;
+    line-height: 15px;
+    text-align: left;
+    align-items: left;
+    margin-bottom: 10px;
+    color: var(--on-color);
+  }

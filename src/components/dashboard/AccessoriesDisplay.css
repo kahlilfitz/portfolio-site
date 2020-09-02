@@ -1,0 +1,34 @@
+.accessory-container {
+    width: 464px;
+    height: 226px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+}
+
+.accessory-grid {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+}
+
+.accessory-grid-row-header {
+    font-size: 20px;
+    line-height: 25px;
+    color: #0B9CFF;
+    margin-top: var(--acc-margin-top);
+}
+
+.accessory-grid-value {
+    font-size: 20px;
+    line-height: 25px;
+    color: #70FF7E;
+    margin-top: var(--acc-margin-top);
+}
+
+.accessory-grid-column-header {
+    font-size: 15px;
+    line-height: 19px;
+    color: #0B9CFF;
+    margin-top: var(--acc-margin-top);
+}

@@ -1,0 +1,16 @@
+.distance-item {
+    margin-top: 30px;
+}
+
+.distance-meter-text {
+    font-family: Armata;
+    font-style: normal;
+    font-weight: normal;
+    fill: var(--off-color);
+}
+
+.distance-text {
+    font-size: 18px;
+    line-height: 22px;
+    color: var(--on-color);
+}

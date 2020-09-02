@@ -1,0 +1,28 @@
+.facial-container {
+    width: 464px;
+    height: 288px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.facial-grid {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+}
+
+.facial-header {
+    font-size: 15px;
+    line-height: 19px;
+    color: #0B9CFF;
+    margin-top: var(--facial-margin-top);
+}
+
+.facial-value {
+    font-size: 20px;
+    line-height: 25px;
+    color: #0B9CFF;
+    margin-top: var(--facial-margin-top);
+}

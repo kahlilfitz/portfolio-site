@@ -1,0 +1,8 @@
+.nod-detected {
+    width: 206px;
+    height: 233px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}

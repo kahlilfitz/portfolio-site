@@ -1,0 +1,78 @@
+.component-label {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 21px;
+  line-height: 26px;
+  color: var(--on-color);
+}
+
+.component-toggle-1 {
+  display: flex;
+  justify-content: center;
+  width: 127px;
+  height: 42px;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
+  border-radius: 10px;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  align-items: center;
+}
+
+.component-toggle-2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 416px;
+  height: 178px;
+  font-size: 21px;
+  line-height: 26px;
+  text-align: center;
+}
+
+.component-toggle-3 {
+  display: flex;
+  justify-content: center;
+  width: 133px;
+  height: 39px;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.component-toggle-4 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 86px;
+  height: 86px;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: center;
+  align-items: center;
+}
+
+.component-font-larger {
+  font-size: 20px;
+  line-height: 25px;
+}
+
+.component-container-1 {
+  width: 636px;
+  height: 183px;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}

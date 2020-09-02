@@ -1,0 +1,102 @@
+@font-face {
+    font-family: Armata;
+    src: url("../font/Armata/Armata-Regular.ttf");
+}
+
+:root {
+    --on-color: #70FF7E;
+    --off-color: #0B9CFF;
+    --border-color: #204ECF;
+    --acc-margin-top: 25px;
+    --facial-margin-top: 30px
+}
+
+.layout-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+
+.layout-row-nowrap {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.layout-column-around {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.layout-column-around {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.layout-column-even {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.dashboard-main {
+    background: #0F256E;
+    overflow-x: hidden;
+    font-family: Armata;
+    font-style: normal;
+    font-weight: normal;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-content: space-around;
+}
+
+.dashboard-header {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.dashboard-header-title {
+    margin-left: 22px;
+    font-size: 30px;
+    line-height: 37px;
+    color: #FFFFFF;
+}
+
+.dashboard-header-line {
+    width: 100%;
+    height: 0px;
+    border: 1px solid #FFFFFF;
+}
+
+.dashboard-component {
+    border: 2px solid var(--border-color);
+    box-sizing: border-box;
+    border-radius: 20px;
+    margin-top: 20px;
+    margin-left: 20px;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.on {
+    background: rgba(34, 86, 233, 0.63);
+    color: var(--on-color);
+}
+
+.off {
+    color: var(--off-color);
+}
+
+.icon-on {
+    fill: var(--on-color);
+}
+
+.icon-off {
+    fill: var(--off-color);
+}
