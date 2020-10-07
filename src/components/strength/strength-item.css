@@ -1,0 +1,30 @@
+.strength-item {
+    font-family: 'Arial Black';
+    font-size: 36px;
+    position: absolute;
+}
+
+.positivity {
+    top: 100px;
+    left: 100px;
+}
+
+.connectedness {
+    top: 135px;
+    left: 150px;
+}
+
+.adaptability {
+    top: 170px;
+    left: 250px;
+}
+
+.includer {
+    top: 205px;
+    left: 350px;
+}
+
+.individualization{
+    top: 240px;
+    left: 400px;
+}

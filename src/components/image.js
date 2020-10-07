@@ -13,8 +13,7 @@ import Img from 'gatsby-image'
  * - `useStaticQuery`: https://www.gatsbyjs.org/docs/use-static-query/
  */
 
-export const ZionImage = (props) => {
-  const { fixed } = props
+export const ZionImage = () => {
   const data = useStaticQuery(graphql`
   query {
     file(relativePath: { eq: "kahlil-zion.png" }) {
