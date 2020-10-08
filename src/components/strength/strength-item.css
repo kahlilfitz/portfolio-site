@@ -4,27 +4,31 @@
     position: absolute;
 }
 
+.strength-item a:link, a:hover, a:active, a:visited {
+    color: white;
+}
+
 .positivity {
     top: 100px;
-    left: 100px;
-}
-
-.connectedness {
-    top: 135px;
-    left: 150px;
-}
-
-.adaptability {
-    top: 170px;
-    left: 250px;
+    left: 300px;
 }
 
 .includer {
-    top: 205px;
-    left: 350px;
+    top: 140px;
+    left: 450px;
 }
 
-.individualization{
-    top: 240px;
-    left: 400px;
+.individualization {
+    top: 180px;
+    left: 490px;
+}
+
+.connectedness {
+    top: 220px;
+    left: 590px;
+}
+
+ .adaptability{
+    top: 260px;
+    left: 660px;
 }
