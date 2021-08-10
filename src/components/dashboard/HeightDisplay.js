@@ -24,7 +24,7 @@ const HeightMeter = props => {
       <line x1="0.0" y1="9" x2="493" y2="12" stroke="#0B9CFF" strokeWidth="3" />
       <rect x={tall_x} y="0" width="4" height="20" rx="2" fill="#0B9CFF" />
       <circle cx={height_x} cy="10" r="10" fill="#70FF7E" />
-      <text x={(tall_x - 26).toFixed(2)} y="45" class="distance-meter-text">
+      <text x={(tall_x - 26).toFixed(2)} y="45" className="distance-meter-text">
         {TALL_BOUND.toFixed(2)}m
       </text>
     </svg>
@@ -52,8 +52,7 @@ const HeightDisplayIcon = _ => {
 
 const HeightDisplay = props => {
   const { height } = props
-  let heightAssessment = ''
-  heightAssessment = height > TALL_BOUND ? ' - Tall' : heightAssessment
+  const heightAssessment = height > TALL_BOUND ? ' - Tall' : ''
 
   return (
     <div className="component-container-1 dashboard-component">

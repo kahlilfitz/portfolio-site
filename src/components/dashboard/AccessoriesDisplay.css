@@ -15,20 +15,20 @@
 .accessory-grid-row-header {
     font-size: 20px;
     line-height: 25px;
-    color: #0B9CFF;
+    color: var(--off-color);
     margin-top: var(--acc-margin-top);
 }
 
 .accessory-grid-value {
     font-size: 20px;
     line-height: 25px;
-    color: #70FF7E;
+    color: var(--on-color);
     margin-top: var(--acc-margin-top);
 }
 
 .accessory-grid-column-header {
     font-size: 15px;
     line-height: 19px;
-    color: #0B9CFF;
+    color: var(--off-color);
     margin-top: var(--acc-margin-top);
 }
