@@ -1,9 +1,10 @@
 import React from 'react'
 import AgeDisplayIcon from './AgeDisplayIcon'
 import { ComponentLabel } from './CommonComponent'
+import {REACT_APP_AGE_THRESHOLD} from './Constants'
 import './AgeDisplay.css'
 
-const AGE_THRESHOLD = parseInt(process.env.REACT_APP_AGE_THRESHOLD)
+const AGE_THRESHOLD = REACT_APP_AGE_THRESHOLD
 
 const AgeDisplay = props => {
   const { age } = props
@@ -15,12 +16,12 @@ const AgeDisplay = props => {
       </ComponentLabel>
       <div className="age-grid">
         <div>
-          <div className="age-item">Actual</div>
-          <div className="age-item">Threshold</div>
+          <div className="age-item off">Actual</div>
+          <div className="age-item off">Threshold</div>
         </div>
         <div>
-          <div className="age-item">{age}</div>
-          <div className="age-item">{AGE_THRESHOLD}</div>
+          <div className="age-item on-nobg">{age}</div>
+          <div className="age-item on-nobg">{AGE_THRESHOLD}</div>
         </div>
       </div>
     </div>

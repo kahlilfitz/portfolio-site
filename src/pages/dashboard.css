@@ -89,6 +89,10 @@
     color: var(--on-color);
 }
 
+.on-nobg {
+    color: var(--on-color);
+}
+
 .off {
     color: var(--off-color);
 }

@@ -45,10 +45,10 @@ const DistanceMeter = props => {
       <rect x={far_x} y="0" width="4" height="20" rx="2" fill="#0B9CFF" />
       <rect x={close_x} y="0" width="4" height="20" rx="2" fill="#0B9CFF" />
       <circle cx={distance_x} cy="10" r="10" fill="#70FF7E" />
-      <text x={(close_x - 26).toFixed(2)} y="45" class="distance-meter-text">
+      <text x={(close_x - 26).toFixed(2)} y="45" className="distance-meter-text">
         {CLOSE_BOUND.toFixed(2)}m
       </text>
-      <text x={(far_x - 26).toFixed(2)} y="45" class="distance-meter-text">
+      <text x={(far_x - 26).toFixed(2)} y="45" className="distance-meter-text">
         {FAR_BOUND.toFixed(2)}m
       </text>
     </svg>

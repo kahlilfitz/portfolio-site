@@ -16,13 +16,13 @@
 .facial-header {
     font-size: 15px;
     line-height: 19px;
-    color: #0B9CFF;
+    color: var(--off-color);
     margin-top: var(--facial-margin-top);
 }
 
 .facial-value {
     font-size: 20px;
     line-height: 25px;
-    color: #0B9CFF;
+    color: var(--on-color);
     margin-top: var(--facial-margin-top);
 }

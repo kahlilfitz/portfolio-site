@@ -13,5 +13,5 @@
 .height-text {
     font-size: 18px;
     line-height: 22px;
-    color: var(--off-color);
+    color: var(--on-color);
 }

@@ -7,8 +7,8 @@ export const sampleDepthData = sampleInterval.pipe(
     map((val) => (
         {
             id: 'realsense_depth',
-            estimated_distance: parseFloat(`${val%210/100}`),
-            estimated_height: parseFloat(`1.${val % 99}`),
+            estimated_distance: parseFloat(`${val%250/100}`),
+            estimated_height: parseFloat(`${((val % 100) + 120) / 100}`),
         }
     ))
 )
