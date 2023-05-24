@@ -36,19 +36,6 @@ const FishTracker = () => {
         </Grid>
       </main>
     </ThemeProvider>
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <main>
-        <Typography variant="h1">Fish Tracker</Typography>
-        <Grid container spacing={2}>
-          {Object.keys(fishDict).map(key => (
-            <Grid item xs={4}>
-              {fishDict[key]}
-            </Grid>
-          ))}
-        </Grid>
-      </main>
-    </ThemeProvider>
   )
 }
 
