@@ -29,8 +29,11 @@ const FishTracker = () => {
         <Typography variant="h1">Fish Tracker</Typography>
         <Grid container spacing={2}>
           {Object.keys(fishDict).map(key => (
-            <Grid item xs={4}>
-              {fishDict[key]}
+            <Grid key={key} xs={4}>
+              <Fish
+                name={fishDict[key].name}
+                handsPlayed={fishDict[key].handsPlayed}
+              />
             </Grid>
           ))}
         </Grid>
@@ -44,15 +47,15 @@ const FishTracker = () => {
  */
 
 const fishDictDefault = {
-  1: <Fish name="Fish 1" handsPlayed={0} />,
-  2: <Fish name="Fish 2" handsPlayed={0} />,
-  3: <Fish name="Fish 3" handsPlayed={0} />,
-  4: <Fish name="Fish 4" handsPlayed={0} />,
-  5: <Fish name="Fish 5" handsPlayed={0} />,
-  6: <Fish name="Fish 6" handsPlayed={0} />,
-  7: <Fish name="Fish 7" handsPlayed={0} />,
-  8: <Fish name="Fish 8" handsPlayed={0} />,
-  9: <Fish name="Fish 9" handsPlayed={0} />,
+  1: { name: 'Fish 1', handsPlayed: 0 },
+  2: { name: 'Fish 2', handsPlayed: 0 },
+  3: { name: 'Fish 3', handsPlayed: 0 },
+  4: { name: 'Fish 4', handsPlayed: 0 },
+  5: { name: 'Fish 5', handsPlayed: 0 },
+  6: { name: 'Fish 6', handsPlayed: 0 },
+  7: { name: 'Fish 7', handsPlayed: 0 },
+  8: { name: 'Fish 8', handsPlayed: 0 },
+  9: { name: 'Fish 9', handsPlayed: 0 },
 }
 
 export default FishTracker
