@@ -1,6 +1,7 @@
 import React from 'react'
 import Grid from '@mui/material/Unstable_Grid2'
 import { Typography } from '@mui/material'
+import SeshStyle from '../../style/sesh-stats'
 
 /**
  *
@@ -21,16 +22,16 @@ const SeshRow = props => {
   return (
     <div>
       <Grid container spacing={2}>
-        <Grid>
+        <Grid sx={SeshStyle.dataSx}>
           <Typography variant="h6">{name}</Typography>
         </Grid>
-        <Grid>
+        <Grid sx={SeshStyle.dataSx}>
           <Typography variant="h6">{handsPlayed}</Typography>
         </Grid>
-        <Grid>
+        <Grid sx={SeshStyle.dataSx}>
           <Typography variant="h6">{vpip}</Typography>
         </Grid>
-        <Grid>
+        <Grid sx={SeshStyle.dataSx}>
           <Typography variant="h6">{pfr}</Typography>
         </Grid>
       </Grid>
