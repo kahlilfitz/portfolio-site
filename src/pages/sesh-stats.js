@@ -1,4 +1,9 @@
-import { Container, Typography } from '@mui/material'
+import {
+  Container,
+  CssBaseline,
+  ThemeProvider,
+  Typography,
+} from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import React from 'react'
 import SeshRow from '../components/sesh-stats/sesh-row'
@@ -7,25 +12,28 @@ import SeshStyle from '../style/sesh-stats'
 const SeshStats = () => {
   const [seshStats, setSeshStats] = React.useState(initialSeshStats)
   return (
-    <Container variant="div">
-      <h1>Sesh Stats</h1>
-      <Grid container spacing={2} direction="column">
-        <Grid container spacing={2} key="header">
-          {columnHeaderList.map((column, index) => (
-            <Grid sx={SeshStyle.headerSx} key={index}>
-              <Typography variant="h5">{column}</Typography>
-            </Grid>
-          ))}
+    <ThemeProvider theme={SeshStyle.darkTheme}>
+      <CssBaseline />
+      <Container variant="div">
+        <h1>Sesh Stats</h1>
+        <Grid container spacing={2} direction="column">
+          <Grid container spacing={2} key="header">
+            {columnHeaderList.map((column, index) => (
+              <Grid sx={SeshStyle.headerSx} key={index}>
+                <Typography variant="h5">{column}</Typography>
+              </Grid>
+            ))}
+          </Grid>
+          <Grid container spacing={2} key="data" direction="column">
+            {initialSeshStats.map((player, index) => (
+              <Grid key={index}>
+                <SeshRow {...player} />
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
-        <Grid container spacing={2} key="data" direction="column">
-          {initialSeshStats.map((player, index) => (
-            <Grid key={index}>
-              <SeshRow {...player} />
-            </Grid>
-          ))}
-        </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </ThemeProvider>
   )
 }
 export default SeshStats
