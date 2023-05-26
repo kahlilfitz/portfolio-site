@@ -16,7 +16,7 @@ const SeshStats = () => {
       <CssBaseline />
       <Container variant="div">
         <h1>Sesh Stats</h1>
-        <Grid container spacing={2} direction="column">
+        <Grid container spacing={2} direction="column" sx={SeshStyle.containerSx}>
           <Grid container spacing={2} key="header">
             {columnHeaderList.map((column, index) => (
               <Grid sx={SeshStyle.headerSx} key={index}>
