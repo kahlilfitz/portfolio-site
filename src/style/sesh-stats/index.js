@@ -23,10 +23,14 @@ const darkTheme = createTheme({
   },
 })
 
+const PopperPlayerStyle = {
+  background: 'gray',
+}
 const SeshStyle = {
   headerSx,
   dataSx,
   darkTheme,
   containerSx,
+  PopperPlayerStyle,
 }
 export default SeshStyle
