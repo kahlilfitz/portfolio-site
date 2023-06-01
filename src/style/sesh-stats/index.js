@@ -2,10 +2,22 @@ import { createTheme } from '@mui/material'
 
 const baseDataElementSx = {
   border: '1px solid white',
-  width: '10em',
+  height: '3em',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+}
+
+const widthSmall = {
+  width: '5em',
+}
+
+const widthMedium = {
+  width: '10em',
+}
+
+const widthLarge = {
+  width: '15em',
 }
 
 const cursorPointer = {
@@ -26,7 +38,7 @@ const clickableSessionDataSx = {
 }
 
 const containerSx = {
-  minWidth: '40em',
+  minWidth: '50em',
 }
 
 const darkTheme = createTheme({
@@ -47,5 +59,8 @@ const SeshStyle = {
   headerSx,
   PopperPlayerStyle,
   sessionDataSx,
+  widthLarge,
+  widthMedium,
+  widthSmall,
 }
 export default SeshStyle

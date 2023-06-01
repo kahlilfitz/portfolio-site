@@ -32,7 +32,6 @@ const SeshStats = () => {
     const playerToUpdate = newSeshStats[playerToUpdateIndex]
     playerToUpdate.name = name
     newSeshStats[playerToUpdateIndex] = playerToUpdate
-    console.log('handleEditPlayerNameSave::newSeshStats', newSeshStats)
     setSeshStats(newSeshStats)
     setEditPlayerNameOpen(false)
   }
@@ -56,7 +55,7 @@ const SeshStats = () => {
         >
           <Grid container spacing={2} key="header">
             {columnHeaderList.map((column, index) => (
-              <Grid sx={SeshStyle.headerSx} key={index}>
+              <Grid sx={{...SeshStyle.headerSx, ...columnHeaderWidth[index]}} key={index}>
                 <Typography variant="h5">{column}</Typography>
               </Grid>
             ))}
@@ -78,6 +77,7 @@ const SeshStats = () => {
 }
 export default SeshStats
 
+const columnHeaderWidth = [SeshStyle.widthSmall, SeshStyle.widthLarge, SeshStyle.widthSmall, SeshStyle.widthSmall, SeshStyle.widthSmall]
 const columnHeaderList = ['SEAT', 'NAME', 'HP', 'VPIP', 'PFR']
 const initialSeshStats = [
   {
