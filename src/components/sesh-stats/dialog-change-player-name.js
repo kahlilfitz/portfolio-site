@@ -18,7 +18,6 @@ const DialogChangePlayerName = props => {
   const [name, setName] = React.useState('')
 
   const handleChange = event => {
-    console.log('handleChange::event.target.value', typeof event.target.value)
     setName(event.target.value.length < 13 ? event.target.value : event.target.value.subString(0, 12))
   }
 

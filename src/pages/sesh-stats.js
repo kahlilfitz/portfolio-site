@@ -32,7 +32,6 @@ const SeshStats = () => {
     const playerToUpdate = newSeshStats[playerToUpdateIndex]
     playerToUpdate.name = name
     newSeshStats[playerToUpdateIndex] = playerToUpdate
-    console.log('handleEditPlayerNameSave::newSeshStats', newSeshStats)
     setSeshStats(newSeshStats)
     setEditPlayerNameOpen(false)
   }
