@@ -3,14 +3,26 @@ import { createTheme } from '@mui/material'
 const baseDataElementSx = {
   border: '1px solid white',
   width: '10em',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}
+
+const cursorPointer = {
+  cursor: 'pointer',
 }
 
 const headerSx = {
   ...baseDataElementSx,
 }
 
-const dataSx = {
+const sessionDataSx = {
   ...baseDataElementSx,
+}
+
+const clickableSessionDataSx = {
+  ...baseDataElementSx,
+  ...cursorPointer,
 }
 
 const containerSx = {
@@ -27,10 +39,13 @@ const PopperPlayerStyle = {
   background: 'gray',
 }
 const SeshStyle = {
-  headerSx,
-  dataSx,
-  darkTheme,
+  clickableSessionDataSx,
   containerSx,
+  cursorPointer,
+  darkTheme,
+  dataSx: sessionDataSx,
+  headerSx,
   PopperPlayerStyle,
+  sessionDataSx,
 }
 export default SeshStyle

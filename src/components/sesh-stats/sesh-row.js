@@ -19,23 +19,19 @@ import PopperPlayer from './popper-player'
  * When you click the PFR, it should open a modal allowing you to increment/decerement the PFR
  */
 const SeshRow = props => {
-  const { name, handsPlayed, vpip, pfr } = props
-  const [playerName, setPlayerName] = React.useState(name)
+  const { name, handsPlayed, vpip, pfr, seat, onEditPlayerNameOpen } = props
   const [playerMenuAnchorEl, setPlayerMenuAnchorEl] = React.useState(null)
   const [playerMenuOpen, setPlayerMenuOpen] = React.useState(false)
-  const [playerNameStyle, setPlayerNameStyle] = React.useState({})
-  const editingPlayer = React.useRef(false)
-  const playerNameInputRef = React.useRef('')
 
-  React.useEffect(() => {
+  /*   React.useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [])
+  }, []) */
 
-  const handleKeyDown = event => {
+  /*   const handleKeyDown = event => {
     const alphaNumericTestList = [
       code => code >= 'KeyA' && code <= 'KeyZ',
       code => code >= 'Digit0' && code <= 'Digit9',
@@ -65,7 +61,7 @@ const SeshRow = props => {
       setPlayerName(playerNameInputRef.current)
       return
     }
-  }
+  } */
 
   const handlePlayerClicked = event => {
     setPlayerMenuAnchorEl(event.currentTarget)
@@ -75,19 +71,10 @@ const SeshRow = props => {
   const handlePlayerCloseClick = () => {
     setPlayerMenuOpen(false)
     setPlayerMenuAnchorEl(null)
-    if (editingPlayer.current) {
-      setPlayerNameStyle({ background: 'transparent' })
-      editingPlayer.current = false
-    }
   }
 
   const handlePlayerEdit = () => {
-    if (editingPlayer.current) {
-      setPlayerNameStyle({ background: 'transparent' })
-    } else {
-      setPlayerNameStyle({ background: 'gray' })
-    }
-    editingPlayer.current = !editingPlayer.current
+    onEditPlayerNameOpen(seat)
   }
 
   return (
@@ -99,18 +86,19 @@ const SeshRow = props => {
         handlePlayerEdit={handlePlayerEdit}
       />
       <Grid container spacing={2}>
-        <Grid sx={SeshStyle.dataSx} onClick={handlePlayerClicked}>
-          <Typography variant="h6" sx={playerNameStyle}>
-            {playerName}
-          </Typography>
+        <Grid sx={SeshStyle.sessionDataSx}>
+          <Typography variant="h6">{seat}</Typography>
         </Grid>
-        <Grid sx={SeshStyle.dataSx}>
+        <Grid sx={SeshStyle.clickableSessionDataSx} onClick={handlePlayerClicked}>
+          <Typography variant="h6">{name}</Typography>
+        </Grid>
+        <Grid sx={SeshStyle.clickableSessionDataSx}>
           <Typography variant="h6">{handsPlayed}</Typography>
         </Grid>
-        <Grid sx={SeshStyle.dataSx}>
+        <Grid sx={SeshStyle.clickableSessionDataSx}>
           <Typography variant="h6">{vpip}</Typography>
         </Grid>
-        <Grid sx={SeshStyle.dataSx}>
+        <Grid sx={SeshStyle.clickableSessionDataSx}>
           <Typography variant="h6">{pfr}</Typography>
         </Grid>
       </Grid>
