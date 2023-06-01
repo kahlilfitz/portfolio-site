@@ -1,8 +1,8 @@
-import { ClickAwayListener, Typography } from '@mui/material'
+import { IconButton, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import React from 'react'
 import SeshStyle from '../../style/sesh-stats'
-import PopperPlayer from './popper-player'
+import EditIcon from '@mui/icons-material/Edit'
 
 /**
  *
@@ -20,85 +20,36 @@ import PopperPlayer from './popper-player'
  */
 const SeshRow = props => {
   const { name, handsPlayed, vpip, pfr, seat, onEditPlayerNameOpen } = props
-  const [playerMenuAnchorEl, setPlayerMenuAnchorEl] = React.useState(null)
-  const [playerMenuOpen, setPlayerMenuOpen] = React.useState(false)
 
-  /*   React.useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, []) */
-
-  /*   const handleKeyDown = event => {
-    const alphaNumericTestList = [
-      code => code >= 'KeyA' && code <= 'KeyZ',
-      code => code >= 'Digit0' && code <= 'Digit9',
-      code => code === 'Space',
-    ]
-
-
-    const leaveKeyArray = ['Enter', 'Escape']
-    
-    if (!editingPlayer.current) return
-
-    if (leaveKeyArray.includes(event.key)) {
-      setPlayerNameStyle({ background: 'transparent' })
-      editingPlayer.current = false
-      return
-    }
-
-    if (event.key === 'Backspace') {
-      playerNameInputRef.current = playerNameInputRef.current.slice(0, -1)
-      setPlayerName(playerNameInputRef.current)
-      return
-    }
-
-    // If the key is a letter number or space
-    if (alphaNumericTestList.some(test => test(event.code))) {
-      playerNameInputRef.current += event.key
-      setPlayerName(playerNameInputRef.current)
-      return
-    }
-  } */
-
-  const handlePlayerClicked = event => {
-    setPlayerMenuAnchorEl(event.currentTarget)
-    setPlayerMenuOpen(true)
-  }
-
-  const handlePlayerCloseClick = () => {
-    setPlayerMenuOpen(false)
-    setPlayerMenuAnchorEl(null)
-  }
-
-  const handlePlayerEdit = () => {
+  const handlePlayerEditClicked = event => {
     onEditPlayerNameOpen(seat)
   }
 
   return (
     <div>
-      <PopperPlayer
-        open={playerMenuOpen}
-        handleCloseClick={handlePlayerCloseClick}
-        anchorEl={playerMenuAnchorEl}
-        handlePlayerEdit={handlePlayerEdit}
-      />
       <Grid container spacing={2}>
-        <Grid sx={SeshStyle.sessionDataSx}>
+        <Grid sx={{...SeshStyle.sessionDataSx, ...SeshStyle.widthSmall}}>
           <Typography variant="h6">{seat}</Typography>
         </Grid>
-        <Grid sx={SeshStyle.clickableSessionDataSx} onClick={handlePlayerClicked}>
-          <Typography variant="h6">{name}</Typography>
+        <Grid sx={{...SeshStyle.sessionDataSx, ...SeshStyle.widthLarge}}>
+          <Grid container spacing={2}>
+            <Grid>
+              <Typography variant="h6">{name}</Typography>
+            </Grid>
+            <Grid>
+              <IconButton onClick={handlePlayerEditClicked}>
+                <EditIcon />
+              </IconButton>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid sx={SeshStyle.clickableSessionDataSx}>
+        <Grid sx={{...SeshStyle.sessionDataSx, ...SeshStyle.widthSmall}}>
           <Typography variant="h6">{handsPlayed}</Typography>
         </Grid>
-        <Grid sx={SeshStyle.clickableSessionDataSx}>
+        <Grid sx={{...SeshStyle.sessionDataSx, ...SeshStyle.widthSmall}}>
           <Typography variant="h6">{vpip}</Typography>
         </Grid>
-        <Grid sx={SeshStyle.clickableSessionDataSx}>
+        <Grid sx={{...SeshStyle.sessionDataSx, ...SeshStyle.widthSmall}}>
           <Typography variant="h6">{pfr}</Typography>
         </Grid>
       </Grid>
