@@ -6,7 +6,7 @@ import {
 } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import React from 'react'
-import SeshRow from '../components/sesh-stats/sesh-row'
+import SeshRow, { SeshRowName } from '../components/sesh-stats/sesh-row'
 import SeshStyle from '../style/sesh-stats'
 import DialogChangePlayerName from '../components/sesh-stats/dialog-change-player-name'
 
@@ -14,6 +14,8 @@ const SeshStats = () => {
   const [seshStats, setSeshStats] = React.useState(initialSeshStats)
   const [editPlayerNameOpen, setEditPlayerNameOpen] = React.useState(false)
   const [editPlayerNameSeat, setEditPlayerNameSeat] = React.useState(0)
+  const [swapping, setSwapping] = React.useState(false)
+  const seatToSwap = React.useRef(0)
 
   const handleEditPlayerNameOpen = seat => {
     setEditPlayerNameSeat(seat)
@@ -36,6 +38,36 @@ const SeshStats = () => {
     setEditPlayerNameOpen(false)
   }
 
+  const handlePlayerAction = (seat, action) => {
+    console.log(`handlePlayerAction: seat=${seat}, action=${action}`)
+    switch (action) {
+      case SeshRowName.SWAP:
+        if (swapping) {
+          const newSeshStats = [...seshStats]
+          const playerToSwapIndex = newSeshStats.findIndex(
+            player => player.seat === seatToSwap.current
+          )
+          const playerToSwap = newSeshStats[playerToSwapIndex]
+          const playerToUpdateIndex = newSeshStats.findIndex(
+            player => player.seat === seat
+          )
+          newSeshStats[playerToSwapIndex] = newSeshStats[playerToUpdateIndex]
+          newSeshStats[playerToSwapIndex].seat = playerToSwap.seat
+          newSeshStats[playerToUpdateIndex] = playerToSwap
+          newSeshStats[playerToUpdateIndex].seat = seat
+          setSeshStats(newSeshStats)
+          setSwapping(false)
+        } else {
+          seatToSwap.current = seat
+          setSwapping(true)
+        }
+        break
+      default: {
+        console.log(`Unknown action: ${action}`)
+      }
+    }
+  }
+
   return (
     <ThemeProvider theme={SeshStyle.darkTheme}>
       <CssBaseline />
@@ -55,7 +87,10 @@ const SeshStats = () => {
         >
           <Grid container spacing={2} key="header">
             {columnHeaderList.map((column, index) => (
-              <Grid sx={{...SeshStyle.headerSx, ...columnHeaderWidth[index]}} key={index}>
+              <Grid
+                sx={{ ...SeshStyle.headerSx, ...columnHeaderWidth[index] }}
+                key={index}
+              >
                 <Typography variant="h5">{column}</Typography>
               </Grid>
             ))}
@@ -65,7 +100,9 @@ const SeshStats = () => {
               <Grid key={index}>
                 <SeshRow
                   {...player}
+                  widthArray={columnHeaderWidth}
                   onEditPlayerNameOpen={handleEditPlayerNameOpen}
+                  onPlayerAction={handlePlayerAction}
                 />
               </Grid>
             ))}
@@ -77,7 +114,13 @@ const SeshStats = () => {
 }
 export default SeshStats
 
-const columnHeaderWidth = [SeshStyle.widthSmall, SeshStyle.widthLarge, SeshStyle.widthSmall, SeshStyle.widthSmall, SeshStyle.widthSmall]
+const columnHeaderWidth = [
+  SeshStyle.widthSmall,
+  SeshStyle.widthLarge,
+  SeshStyle.widthMedium,
+  SeshStyle.widthMedium,
+  SeshStyle.widthMedium,
+]
 const columnHeaderList = ['SEAT', 'NAME', 'HP', 'VPIP', 'PFR']
 const initialSeshStats = [
   {

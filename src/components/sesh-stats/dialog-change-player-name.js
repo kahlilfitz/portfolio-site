@@ -21,6 +21,14 @@ const DialogChangePlayerName = props => {
     setName(event.target.value.length < 13 ? event.target.value : event.target.value.subString(0, 12))
   }
 
+  const handleKeyDown = event => {
+    //If the user presses enter, save the name
+    if (event.key === 'Enter') {
+        handleSave()
+        event.preventDefault()
+        }
+}
+  
   const handleSave = () => {
     onSave(name)
   }
@@ -39,6 +47,7 @@ const DialogChangePlayerName = props => {
           label="Player Name"
           type="text"
           onChange={handleChange}
+          onKeyDown={handleKeyDown}
           fullWidth
         />
       </DialogContent>
