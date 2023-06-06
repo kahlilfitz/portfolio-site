@@ -8,12 +8,18 @@ const baseDataElementSx = {
   alignItems: 'center',
 }
 
+const subGridSx = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}
+
 const widthSmall = {
-  width: '5em',
+  width: '8em',
 }
 
 const widthMedium = {
-  width: '10em',
+  width: '11em',
 }
 
 const widthLarge = {
@@ -37,8 +43,8 @@ const clickableSessionDataSx = {
   ...cursorPointer,
 }
 
-const containerSx = {
-  minWidth: '50em',
+const gridContainerSx = {
+  minWidth: '56em',
 }
 
 const darkTheme = createTheme({
@@ -47,18 +53,15 @@ const darkTheme = createTheme({
   },
 })
 
-const PopperPlayerStyle = {
-  background: 'gray',
-}
 const SeshStyle = {
   clickableSessionDataSx,
-  containerSx,
+  containerSx: gridContainerSx,
   cursorPointer,
   darkTheme,
   dataSx: sessionDataSx,
   headerSx,
-  PopperPlayerStyle,
   sessionDataSx,
+  subGridSx,
   widthLarge,
   widthMedium,
   widthSmall,
