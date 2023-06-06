@@ -33,8 +33,16 @@ export const SeshRowIcon = {
 }
 
 const SeshRow = props => {
-  const { name, handsPlayed, vpip, pfr, seat, onPlayerAction, widthArray } =
-    props
+  const {
+    name,
+    handsPlayed,
+    vpip,
+    pfr,
+    seat,
+    onPlayerAction,
+    widthArray,
+    swapping,
+  } = props
 
   const handleIconClicked = name => {
     onPlayerAction(seat, name)
@@ -53,6 +61,7 @@ const SeshRow = props => {
                 onClick={event => {
                   handleIconClicked(SeshRowIcon.SWAP)
                 }}
+                sx={swapping ? SeshStyle.swappingSx : SeshStyle.notSwappingSx}
               >
                 <SwapVerticalCircleIcon />
               </IconButton>

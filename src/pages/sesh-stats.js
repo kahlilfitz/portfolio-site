@@ -168,6 +168,7 @@ const SeshStats = () => {
                   widthArray={columnHeaderWidth}
                   onEditPlayerNameOpen={handleEditPlayerNameOpen}
                   onPlayerAction={handlePlayerAction}
+                  swapping={swapping}
                 />
               </Grid>
             ))}

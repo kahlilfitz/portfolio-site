@@ -8,6 +8,14 @@ const baseDataElementSx = {
   alignItems: 'center',
 }
 
+const swappingSx = {
+  color: 'green',
+}
+
+const notSwappingSx = {
+  color: 'white',
+}
+
 const subGridSx = {
   display: 'flex',
   justifyContent: 'center',
@@ -60,8 +68,10 @@ const SeshStyle = {
   darkTheme,
   dataSx: sessionDataSx,
   headerSx,
+  notSwappingSx,
   sessionDataSx,
   subGridSx,
+  swappingSx,
   widthLarge,
   widthMedium,
   widthSmall,
