@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close'
 import EditIcon from '@mui/icons-material/Edit'
-import { ClickAwayListener, IconButton, Popper } from '@mui/material'
+import { IconButton, Popper } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import React from 'react'
 import SeshStyle from '../../style/sesh-stats'

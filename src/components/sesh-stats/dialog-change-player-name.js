@@ -41,7 +41,6 @@ const DialogChangePlayerName = props => {
           Change the player name at seat {seat} to:
         </DialogContentText>
         <TextField
-          autoFocus
           margin="dense"
           value={name}
           label="Player Name"

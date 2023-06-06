@@ -6,7 +6,7 @@ import {
 } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import React from 'react'
-import SeshRow, { SeshRowName } from '../components/sesh-stats/sesh-row'
+import SeshRow, { SeshRowIcon } from '../components/sesh-stats/sesh-row'
 import SeshStyle from '../style/sesh-stats'
 import DialogChangePlayerName from '../components/sesh-stats/dialog-change-player-name'
 
@@ -39,9 +39,8 @@ const SeshStats = () => {
   }
 
   const handlePlayerAction = (seat, action) => {
-    console.log(`handlePlayerAction: seat=${seat}, action=${action}`)
     switch (action) {
-      case SeshRowName.SWAP:
+      case SeshRowIcon.SWAP:
         if (swapping) {
           const newSeshStats = [...seshStats]
           const playerToSwapIndex = newSeshStats.findIndex(
@@ -61,6 +60,72 @@ const SeshStats = () => {
           seatToSwap.current = seat
           setSwapping(true)
         }
+        break
+      case SeshRowIcon.EDIT:
+        handleEditPlayerNameOpen(seat)
+        break
+      case SeshRowIcon.MINUS_HANDS:
+        const newSeshStats = [...seshStats]
+        const playerToUpdateIndex = newSeshStats.findIndex(
+          player => player.seat === seat
+        )
+        const playerToUpdate = newSeshStats[playerToUpdateIndex]
+        playerToUpdate.handsPlayed =
+          playerToUpdate.handsPlayed > 0 ? playerToUpdate.handsPlayed - 1 : 0
+        newSeshStats[playerToUpdateIndex] = playerToUpdate
+        setSeshStats(newSeshStats)
+        break
+      case SeshRowIcon.PLUS_HANDS:
+        const newSeshStats2 = [...seshStats]
+        const playerToUpdateIndex2 = newSeshStats2.findIndex(
+          player => player.seat === seat
+        )
+        const playerToUpdate2 = newSeshStats2[playerToUpdateIndex2]
+        playerToUpdate2.handsPlayed = playerToUpdate2.handsPlayed + 1
+        newSeshStats2[playerToUpdateIndex2] = playerToUpdate2
+        setSeshStats(newSeshStats2)
+        break
+      case SeshRowIcon.MINUS_PFR:
+        const newSeshStats3 = [...seshStats]
+        const playerToUpdateIndex3 = newSeshStats3.findIndex(
+          player => player.seat === seat
+        )
+        const playerToUpdate3 = newSeshStats3[playerToUpdateIndex3]
+        playerToUpdate3.pfr =
+          playerToUpdate3.pfr > 0 ? playerToUpdate3.pfr - 1 : 0
+        newSeshStats3[playerToUpdateIndex3] = playerToUpdate3
+        setSeshStats(newSeshStats3)
+        break
+      case SeshRowIcon.PLUS_PFR:
+        const newSeshStats4 = [...seshStats]
+        const playerToUpdateIndex4 = newSeshStats4.findIndex(
+          player => player.seat === seat
+        )
+        const playerToUpdate4 = newSeshStats4[playerToUpdateIndex4]
+        playerToUpdate4.pfr = playerToUpdate4.pfr + 1
+        newSeshStats4[playerToUpdateIndex4] = playerToUpdate4
+        setSeshStats(newSeshStats4)
+        break
+      case SeshRowIcon.MINUS_VPIP:
+        const newSeshStats5 = [...seshStats]
+        const playerToUpdateIndex5 = newSeshStats5.findIndex(
+          player => player.seat === seat
+        )
+        const playerToUpdate5 = newSeshStats5[playerToUpdateIndex5]
+        playerToUpdate5.vpip =
+          playerToUpdate5.vpip > 0 ? playerToUpdate5.vpip - 1 : 0
+        newSeshStats5[playerToUpdateIndex5] = playerToUpdate5
+        setSeshStats(newSeshStats5)
+        break
+      case SeshRowIcon.PLUS_VPIP:
+        const newSeshStats6 = [...seshStats]
+        const playerToUpdateIndex6 = newSeshStats6.findIndex(
+          player => player.seat === seat
+        )
+        const playerToUpdate6 = newSeshStats6[playerToUpdateIndex6]
+        playerToUpdate6.vpip = playerToUpdate6.vpip + 1
+        newSeshStats6[playerToUpdateIndex6] = playerToUpdate6
+        setSeshStats(newSeshStats6)
         break
       default: {
         console.log(`Unknown action: ${action}`)

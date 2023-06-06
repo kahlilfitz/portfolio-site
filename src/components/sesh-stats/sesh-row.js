@@ -21,30 +21,23 @@ import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
  * When you click the VPIP, it should open a modal allowing you to increment/decerement the VPIP
  * When you click the PFR, it should open a modal allowing you to increment/decerement the PFR
  */
-export const SeshRowName = {
-  SEAT: 'seat',
-  NAME: 'name',
-  HANDS_PLAYED: 'handsPlayed',
-  VPIP: 'vpip',
-  PFR: 'pfr',
+export const SeshRowIcon = {
+  SWAP: 'SWAP',
+  EDIT: 'EDIT',
+  PLUS_VPIP: 'PLUS_VPIP',
+  MINUS_VPIP: 'MINUS_VPIP',
+  PLUS_PFR: 'PLUS_PFR',
+  MINUS_PFR: 'MINUS_PFR',
+  PLUS_HANDS: 'PLUS_HANDS',
+  MINUS_HANDS: 'MINUS_HANDS',
 }
-const SeshRow = props => {
-  const {
-    name,
-    handsPlayed,
-    vpip,
-    pfr,
-    seat,
-    onPlayerAction,
-    onEditPlayerNameOpen,
-    widthArray,
-  } = props
 
-  const handlePlayerEditClicked = event => {
-    onEditPlayerNameOpen(seat)
-  }
-  const handlePlayerSwapClick = event => {
-    onPlayerAction(seat, SeshRowName.SWAP)
+const SeshRow = props => {
+  const { name, handsPlayed, vpip, pfr, seat, onPlayerAction, widthArray } =
+    props
+
+  const handleIconClicked = name => {
+    onPlayerAction(seat, name)
   }
 
   return (
@@ -56,7 +49,11 @@ const SeshRow = props => {
               <Typography variant="h6">{seat}</Typography>
             </Grid>
             <Grid>
-              <IconButton onClick={handlePlayerSwapClick}>
+              <IconButton
+                onClick={event => {
+                  handleIconClicked(SeshRowIcon.SWAP)
+                }}
+              >
                 <SwapVerticalCircleIcon />
               </IconButton>
             </Grid>
@@ -68,7 +65,11 @@ const SeshRow = props => {
               <Typography variant="h6">{name}</Typography>
             </Grid>
             <Grid>
-              <IconButton onClick={handlePlayerEditClicked}>
+              <IconButton
+                onClick={() => {
+                  handleIconClicked(SeshRowIcon.EDIT)
+                }}
+              >
                 <EditIcon />
               </IconButton>
             </Grid>
@@ -80,12 +81,20 @@ const SeshRow = props => {
               <Typography variant="h6">{handsPlayed}</Typography>
             </Grid>
             <Grid>
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  handleIconClicked(SeshRowIcon.MINUS_HANDS)
+                }}
+              >
                 <RemoveCircleIcon />
               </IconButton>
             </Grid>
             <Grid>
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  handleIconClicked(SeshRowIcon.PLUS_HANDS)
+                }}
+              >
                 <AddCircleIcon />
               </IconButton>
             </Grid>
@@ -97,12 +106,20 @@ const SeshRow = props => {
               <Typography variant="h6">{vpip}</Typography>
             </Grid>
             <Grid>
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  handleIconClicked(SeshRowIcon.MINUS_VPIP)
+                }}
+              >
                 <RemoveCircleIcon />
               </IconButton>
             </Grid>
             <Grid>
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  handleIconClicked(SeshRowIcon.PLUS_VPIP)
+                }}
+              >
                 <AddCircleIcon />
               </IconButton>
             </Grid>
@@ -114,12 +131,20 @@ const SeshRow = props => {
               <Typography variant="h6">{pfr}</Typography>
             </Grid>
             <Grid>
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  handleIconClicked(SeshRowIcon.MINUS_PFR)
+                }}
+              >
                 <RemoveCircleIcon />
               </IconButton>
             </Grid>
             <Grid>
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  handleIconClicked(SeshRowIcon.PLUS_PFR)
+                }}
+              >
                 <AddCircleIcon />
               </IconButton>
             </Grid>

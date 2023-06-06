@@ -15,11 +15,11 @@ const subGridSx = {
 }
 
 const widthSmall = {
-  width: '7em',
+  width: '8em',
 }
 
 const widthMedium = {
-  width: '10em',
+  width: '11em',
 }
 
 const widthLarge = {
@@ -43,8 +43,8 @@ const clickableSessionDataSx = {
   ...cursorPointer,
 }
 
-const containerSx = {
-  minWidth: '50em',
+const gridContainerSx = {
+  minWidth: '56em',
 }
 
 const darkTheme = createTheme({
@@ -55,7 +55,7 @@ const darkTheme = createTheme({
 
 const SeshStyle = {
   clickableSessionDataSx,
-  containerSx,
+  containerSx: gridContainerSx,
   cursorPointer,
   darkTheme,
   dataSx: sessionDataSx,
