@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
+import ChairAltIcon from '@mui/icons-material/ChairAlt'
 
 /**
  *
@@ -30,6 +31,7 @@ export const SeshRowIcon = {
   MINUS_PFR: 'MINUS_PFR',
   PLUS_HANDS: 'PLUS_HANDS',
   MINUS_HANDS: 'MINUS_HANDS',
+  TOGGLE_SEATED: 'TOGGLE_SEATED',
 }
 
 const SeshRow = props => {
@@ -42,7 +44,10 @@ const SeshRow = props => {
     onPlayerAction,
     widthArray,
     swapping,
+    isSeated,
   } = props
+
+  console.log('SeshRow::props', props)
 
   const handleIconClicked = name => {
     onPlayerAction(seat, name)
@@ -53,6 +58,16 @@ const SeshRow = props => {
       <Grid container spacing={2}>
         <Grid sx={{ ...SeshStyle.sessionDataSx, ...widthArray[0] }}>
           <Grid container sx={SeshStyle.subGridSx}>
+            <Grid>
+              <IconButton
+                onClick={event => {
+                  handleIconClicked(SeshRowIcon.TOGGLE_SEATED)
+                }}
+                sx={isSeated ? SeshStyle.seatedSx : SeshStyle.notSeatedSx}
+              >
+                <ChairAltIcon />
+              </IconButton>
+            </Grid>
             <Grid>
               <Typography variant="h6">{seat}</Typography>
             </Grid>
