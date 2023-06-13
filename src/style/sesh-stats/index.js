@@ -16,6 +16,14 @@ const notSwappingSx = {
   color: 'white',
 }
 
+const seatedSx = {
+  color: 'white',
+}
+
+const notSeatedSx = {
+  color: 'grey',
+}
+
 const subGridSx = {
   display: 'flex',
   justifyContent: 'center',
@@ -52,7 +60,7 @@ const clickableSessionDataSx = {
 }
 
 const gridContainerSx = {
-  minWidth: '56em',
+  minWidth: '59em',
 }
 
 const darkTheme = createTheme({
@@ -68,7 +76,9 @@ const SeshStyle = {
   darkTheme,
   dataSx: sessionDataSx,
   headerSx,
+  notSeatedSx,
   notSwappingSx,
+  seatedSx,
   sessionDataSx,
   subGridSx,
   swappingSx,
