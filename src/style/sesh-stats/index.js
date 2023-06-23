@@ -60,7 +60,7 @@ const clickableSessionDataSx = {
 }
 
 const gridContainerSx = {
-  minWidth: '59em',
+  minWidth: '63em',
 }
 
 const darkTheme = createTheme({

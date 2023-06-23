@@ -7,6 +7,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
 import ChairAltIcon from '@mui/icons-material/ChairAlt'
+import RestartAltIcon from '@mui/icons-material/RestartAlt'
 
 /**
  *
@@ -23,14 +24,16 @@ import ChairAltIcon from '@mui/icons-material/ChairAlt'
  * When you click the PFR, it should open a modal allowing you to increment/decerement the PFR
  */
 export const SeshRowIcon = {
-  SWAP: 'SWAP',
   EDIT: 'EDIT',
-  PLUS_VPIP: 'PLUS_VPIP',
-  MINUS_VPIP: 'MINUS_VPIP',
-  PLUS_PFR: 'PLUS_PFR',
-  MINUS_PFR: 'MINUS_PFR',
-  PLUS_HANDS: 'PLUS_HANDS',
   MINUS_HANDS: 'MINUS_HANDS',
+  MINUS_PFR: 'MINUS_PFR',
+  MINUS_VPIP: 'MINUS_VPIP',
+  PLUS_HANDS: 'PLUS_HANDS',
+  PLUS_PFR: 'PLUS_PFR',
+  PLUS_VPIP: 'PLUS_VPIP',
+  RESET: 'RESET',
+  SWAP: 'SWAP',
+
   TOGGLE_SEATED: 'TOGGLE_SEATED',
 }
 
@@ -58,6 +61,15 @@ const SeshRow = props => {
       <Grid container spacing={2}>
         <Grid sx={{ ...SeshStyle.sessionDataSx, ...widthArray[0] }}>
           <Grid container sx={SeshStyle.subGridSx}>
+            <Grid>
+              <IconButton
+                onClick={() => {
+                  handleIconClicked(SeshRowIcon.RESET)
+                }}
+              >
+                <RestartAltIcon />
+              </IconButton>
+            </Grid>
             <Grid>
               <IconButton
                 onClick={event => {
