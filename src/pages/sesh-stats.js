@@ -130,6 +130,19 @@ const SeshStats = () => {
         playerToUpdate7.isSeated = !playerToUpdate7.isSeated
         setSeshStats(newSeshStats7)
         break
+      case SeshRowIcon.RESET:
+        const newSeshStats8 = [...seshStats]
+        const playerToUpdate8 = newSeshStats8.find(
+          player => player.seat === seat
+        )
+        playerToUpdate8.isSeated = true
+        playerToUpdate8.handsPlayed = 0
+        playerToUpdate8.pfr = 0
+        playerToUpdate8.vpip = 0
+        playerToUpdate8.name = `Player ${seat}`
+        setSeshStats(newSeshStats8)
+        break
+
       default: {
         console.log(`Unknown action: ${action}`)
       }
@@ -242,7 +255,7 @@ const SeshStats = () => {
 export default SeshStats
 
 const columnHeaderWidth = [
-  SeshStyle.widthMedium,
+  SeshStyle.widthLarge,
   SeshStyle.widthLarge,
   SeshStyle.widthMedium,
   SeshStyle.widthMedium,
