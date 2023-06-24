@@ -12,6 +12,9 @@ import React from 'react'
 import DialogChangePlayerName from '../components/sesh-stats/dialog-change-player-name'
 import SeshRow, { SeshRowIcon } from '../components/sesh-stats/sesh-row'
 import SeshStyle from '../style/sesh-stats'
+import TimerIcon from '@mui/icons-material/Timer'
+import RestartAltIcon from '@mui/icons-material/RestartAlt'
+import { interval } from 'rxjs'
 
 const SeshStats = () => {
   const [seshStats, setSeshStats] = React.useState(initialSeshStats)
@@ -19,7 +22,15 @@ const SeshStats = () => {
   const [editPlayerNameSeat, setEditPlayerNameSeat] = React.useState(0)
   const [swapping, setSwapping] = React.useState(false)
   const seatToSwap = React.useRef(0)
+  const [seshTime, setSeshTime] = React.useState(0)
+  const seshTimer = React.useRef(interval(1000))
 
+  React.useEffect(() => {
+    seshTimer.current.subscribe(x => {
+      setSeshTime(s => s + 1)
+      return () => (seshTimer.current = null)
+    })
+  }, [seshTimer.current])
   const handleEditPlayerNameOpen = seat => {
     setEditPlayerNameSeat(seat)
     setEditPlayerNameOpen(true)
@@ -183,7 +194,31 @@ const SeshStats = () => {
         seat={editPlayerNameSeat}
       />
       <Container variant="div">
-        <h1>Sesh Stats</h1>
+        <Grid
+          container
+          spacing={2}
+          sx={{ display: 'flex', alignItems: 'center' }}
+        >
+          <Grid>
+            <Typography variant="h3">Sesh</Typography>
+          </Grid>
+          <Grid>
+            <TimerIcon />
+          </Grid>
+          <Grid>
+            <Typography variant="h3">{formatSeconds(seshTime)}</Typography>
+          </Grid>
+          <Grid>
+            <IconButton
+              onClick={event => {
+                setSeshTime(0)
+              }}
+            >
+              <RestartAltIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
+
         <Grid
           container
           spacing={2}
@@ -253,6 +288,16 @@ const SeshStats = () => {
   )
 }
 export default SeshStats
+
+const formatSeconds = seconds => {
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const minutesLeft = minutes % 60
+  const secondsLeft = seconds % 60
+  return `${hours > 9 ? '' : '0'}${hours}:${
+    minutesLeft > 9 ? '' : '0'
+  }${minutesLeft}:${secondsLeft > 9 ? '' : '0'}${secondsLeft}`
+}
 
 const columnHeaderWidth = [
   SeshStyle.widthLarge,
