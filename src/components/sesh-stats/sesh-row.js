@@ -50,8 +50,6 @@ const SeshRow = props => {
     isSeated,
   } = props
 
-  console.log('SeshRow::props', props)
-
   const handleIconClicked = name => {
     onPlayerAction(seat, name)
   }

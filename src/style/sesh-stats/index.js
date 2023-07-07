@@ -35,7 +35,7 @@ const widthSmall = {
 }
 
 const widthMedium = {
-  width: '11em',
+  width: '12em',
 }
 
 const widthLarge = {
@@ -60,7 +60,7 @@ const clickableSessionDataSx = {
 }
 
 const gridContainerSx = {
-  minWidth: '63em',
+  minWidth: '66em',
 }
 
 const darkTheme = createTheme({
