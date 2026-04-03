@@ -522,7 +522,7 @@ export default function CrapsSession() {
                     if (isFirstPastCap) {
                       acc.push(
                         <tr key={`cap-${r.roll}`}>
-                          <td colSpan={7} style={{ padding: "10px 12px" }}>
+                          <td colSpan={7} aria-label="Roll cap separator" style={{ padding: "10px 12px" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                               <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, transparent, #d4af37)" }} />
                               <span style={{ fontFamily: "'Cinzel', serif", fontSize: "0.58rem", letterSpacing: "0.2em", color: "#d4af37", textTransform: "uppercase", whiteSpace: "nowrap" }}>⟡ Roll 100 — Riding to 7-Out ⟡</span>

@@ -27,23 +27,26 @@ const APPS = [
 ]
 
 const AppCard = ({ title, description, to }) => (
-  <Link to={to} style={{ textDecoration: 'none' }}>
+  <Link
+    to={to}
+    style={{ textDecoration: 'none', display: 'block' }}
+    onMouseEnter={e => {
+      e.currentTarget.querySelector('.app-card').style.borderColor = '#cc2222'
+      e.currentTarget.querySelector('.app-card').style.transform = 'translateY(-2px)'
+    }}
+    onMouseLeave={e => {
+      e.currentTarget.querySelector('.app-card').style.borderColor = '#1e1e1e'
+      e.currentTarget.querySelector('.app-card').style.transform = 'translateY(0)'
+    }}
+  >
     <div
+      className="app-card"
       style={{
         background: '#111',
         border: '1px solid #1e1e1e',
         borderRadius: 6,
         padding: '1.5rem',
         transition: 'border-color 0.2s, transform 0.2s',
-        cursor: 'pointer',
-      }}
-      onMouseEnter={e => {
-        e.currentTarget.style.borderColor = '#cc2222'
-        e.currentTarget.style.transform = 'translateY(-2px)'
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.borderColor = '#1e1e1e'
-        e.currentTarget.style.transform = 'translateY(0)'
       }}
     >
       <div style={{

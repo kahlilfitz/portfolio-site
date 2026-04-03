@@ -43,10 +43,8 @@ const Header = ({ siteTitle }) => (
           <Link
             key={to}
             to={to}
-            style={{ textDecoration: 'none' }}
-            activeStyle={{ color: '#cc2222' }}
-          >
-            <span style={{
+            style={{
+              textDecoration: 'none',
               color: '#aaa',
               fontFamily: "'Inter', sans-serif",
               fontSize: '0.85rem',
@@ -55,11 +53,11 @@ const Header = ({ siteTitle }) => (
               textTransform: 'uppercase',
               transition: 'color 0.15s',
             }}
-              onMouseEnter={e => e.currentTarget.style.color = '#2a9a2a'}
-              onMouseLeave={e => e.currentTarget.style.color = '#aaa'}
-            >
-              {label}
-            </span>
+            activeStyle={{ color: '#cc2222' }}
+            onMouseEnter={e => e.currentTarget.style.color = '#2a9a2a'}
+            onMouseLeave={e => e.currentTarget.style.color = '#aaa'}
+          >
+            {label}
           </Link>
         ))}
       </nav>
