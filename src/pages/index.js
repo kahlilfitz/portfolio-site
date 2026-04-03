@@ -8,11 +8,13 @@ const APPS = [
     title: 'Craps Sim',
     description: 'Simulate craps sessions with configurable bets and odds. Track your bankroll across multiple runs.',
     to: '/craps-sim',
+    newTab: true,
   },
   {
     title: 'Sesh Stats',
     description: 'Track poker session stats for up to 10 players — hands played, VPIP, PFR, and session time.',
     to: '/sesh-stats',
+    newTab: true,
   },
   {
     title: 'Robot',
@@ -26,55 +28,63 @@ const APPS = [
   },
 ]
 
-const AppCard = ({ title, description, to }) => (
-  <Link
-    to={to}
-    style={{ textDecoration: 'none', display: 'block' }}
-    onMouseEnter={e => {
-      e.currentTarget.querySelector('.app-card').style.borderColor = '#cc2222'
-      e.currentTarget.querySelector('.app-card').style.transform = 'translateY(-2px)'
-    }}
-    onMouseLeave={e => {
-      e.currentTarget.querySelector('.app-card').style.borderColor = '#1e1e1e'
-      e.currentTarget.querySelector('.app-card').style.transform = 'translateY(0)'
+const cardInner = (title, description) => (
+  <div
+    className="app-card"
+    style={{
+      background: '#111',
+      border: '1px solid #1e1e1e',
+      borderRadius: 6,
+      padding: '1.5rem',
+      transition: 'border-color 0.2s, transform 0.2s',
     }}
   >
-    <div
-      className="app-card"
-      style={{
-        background: '#111',
-        border: '1px solid #1e1e1e',
-        borderRadius: 6,
-        padding: '1.5rem',
-        transition: 'border-color 0.2s, transform 0.2s',
-      }}
-    >
-      <div style={{
-        width: 8,
-        height: 8,
-        borderRadius: '50%',
-        background: '#2a9a2a',
-        marginBottom: '1rem',
-      }} />
-      <h3 style={{
-        margin: '0 0 0.5rem',
-        fontFamily: "'Inter', sans-serif",
-        fontWeight: 600,
-        fontSize: '1rem',
-        color: '#f0f0f0',
-      }}>
-        {title}
-      </h3>
-      <p style={{
-        margin: 0,
-        fontFamily: "'Inter', sans-serif",
-        fontSize: '0.85rem',
-        color: '#777',
-        lineHeight: 1.6,
-      }}>
-        {description}
-      </p>
-    </div>
+    <div style={{
+      width: 8,
+      height: 8,
+      borderRadius: '50%',
+      background: '#2a9a2a',
+      marginBottom: '1rem',
+    }} />
+    <h3 style={{
+      margin: '0 0 0.5rem',
+      fontFamily: "'Inter', sans-serif",
+      fontWeight: 600,
+      fontSize: '1rem',
+      color: '#f0f0f0',
+    }}>
+      {title}
+    </h3>
+    <p style={{
+      margin: 0,
+      fontFamily: "'Inter', sans-serif",
+      fontSize: '0.85rem',
+      color: '#777',
+      lineHeight: 1.6,
+    }}>
+      {description}
+    </p>
+  </div>
+)
+
+const hoverHandlers = {
+  onMouseEnter: e => {
+    e.currentTarget.querySelector('.app-card').style.borderColor = '#cc2222'
+    e.currentTarget.querySelector('.app-card').style.transform = 'translateY(-2px)'
+  },
+  onMouseLeave: e => {
+    e.currentTarget.querySelector('.app-card').style.borderColor = '#1e1e1e'
+    e.currentTarget.querySelector('.app-card').style.transform = 'translateY(0)'
+  },
+}
+
+const AppCard = ({ title, description, to, newTab }) => newTab ? (
+  <a href={to} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'block' }} {...hoverHandlers}>
+    {cardInner(title, description)}
+  </a>
+) : (
+  <Link to={to} style={{ textDecoration: 'none', display: 'block' }} {...hoverHandlers}>
+    {cardInner(title, description)}
   </Link>
 )
 
