@@ -102,7 +102,7 @@ const IndexPage = () => (
       </p>
     </div>
 
-    <section>
+    <section id="apps">
       <div style={{
         display: 'flex',
         alignItems: 'center',

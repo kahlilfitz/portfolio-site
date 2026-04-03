@@ -33,7 +33,7 @@ const Header = ({ siteTitle }) => (
 
       <nav>
         <Link
-          to="/"
+          to="/#apps"
           style={{
             textDecoration: 'none',
             color: '#aaa',
