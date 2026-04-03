@@ -39,7 +39,7 @@ const RobotIndex = () => {
     return (
         <Layout>
             <Link to="/">Home</Link>
-            <h1>Press 0-7 to change robot state.</h1>
+            <h1>Press 1-7 to change robot state. 0 to reset.</h1>
             <div className="Character-mode">
                 <RobotCharacter
                     charConfig={robotConfig}
