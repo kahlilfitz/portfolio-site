@@ -1,9 +1,19 @@
 .Character-mode {
     background: white;
+    overflow: visible;
 }
 
 .DB{
     max-height: 500px;
+    overflow: visible;
+    display: block;
+}
+
+.DBContainer {
+    display: flex;
+    justify-content: center;
+    padding: 60px 120px;
+    overflow: visible;
 }
 
 .DB-cls-1 {

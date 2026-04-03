@@ -30,7 +30,7 @@ const SeshStats = () => {
       setSeshTime(s => s + 1)
       return () => (seshTimer.current = null)
     })
-  }, [seshTimer.current])
+  }, [])
   const handleEditPlayerNameOpen = seat => {
     setEditPlayerNameSeat(seat)
     setEditPlayerNameOpen(true)
