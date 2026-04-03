@@ -2,41 +2,77 @@ import { Link } from 'gatsby'
 import PropTypes from 'prop-types'
 import React from 'react'
 
+const NAV_LINKS = [
+  { label: 'Craps Sim', to: '/craps-sim' },
+  { label: 'Sesh Stats', to: '/sesh-stats' },
+  { label: 'Robot', to: '/robot' },
+  { label: 'Dashboard', to: '/dashboard' },
+]
+
 const Header = ({ siteTitle }) => (
-  <header
-    style={{
-      background: `black`,
-      marginBottom: `1.45rem`
-    }}
-  >
-    <div
-      style={{
-        margin: `0 auto`,
-        maxWidth: 960,
-        padding: `1.0875rem 0 1.0875rem 0`
-      }}
-    >
-      <h1 style={{ margin: 0, fontSize: '1.0875rem' }}>
-        <Link
-          to="/"
-          style={{
-            color: `white`,
-            textDecoration: `none`
-          }}
-        >
+  <header style={{
+    background: '#0a0a0a',
+    borderBottom: '2px solid #cc2222',
+    position: 'sticky',
+    top: 0,
+    zIndex: 100,
+  }}>
+    <div style={{
+      margin: '0 auto',
+      maxWidth: 1100,
+      padding: '0 1.5rem',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      height: 56,
+    }}>
+      <Link to="/" style={{ textDecoration: 'none' }}>
+        <span style={{
+          color: '#f5f5f5',
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 700,
+          fontSize: '1.1rem',
+          letterSpacing: '0.02em',
+        }}>
           {siteTitle}
-        </Link>
-      </h1>
+        </span>
+      </Link>
+
+      <nav style={{ display: 'flex', gap: '1.75rem' }}>
+        {NAV_LINKS.map(({ label, to }) => (
+          <Link
+            key={to}
+            to={to}
+            style={{ textDecoration: 'none' }}
+            activeStyle={{ color: '#cc2222' }}
+          >
+            <span style={{
+              color: '#aaa',
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '0.85rem',
+              fontWeight: 500,
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+              transition: 'color 0.15s',
+            }}
+              onMouseEnter={e => e.currentTarget.style.color = '#2a9a2a'}
+              onMouseLeave={e => e.currentTarget.style.color = '#aaa'}
+            >
+              {label}
+            </span>
+          </Link>
+        ))}
+      </nav>
     </div>
   </header>
 )
 
 Header.propTypes = {
-  siteTitle: PropTypes.string
+  siteTitle: PropTypes.string,
 }
 
 Header.defaultProps = {
-  siteTitle: ``
+  siteTitle: '',
 }
 
 export default Header
