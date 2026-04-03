@@ -16,16 +16,6 @@ const APPS = [
     to: '/sesh-stats',
     newTab: true,
   },
-  {
-    title: 'Robot',
-    description: 'Interactive robot character.',
-    to: '/robot',
-  },
-  {
-    title: 'Dashboard',
-    description: 'Live data dashboard built with computer vision and sensor integrations.',
-    to: '/dashboard',
-  },
 ]
 
 const cardInner = (title, description) => (
