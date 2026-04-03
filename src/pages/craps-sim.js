@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 
 // Mulberry32 — fast, high-quality 32-bit seeded PRNG
 function mulberry32(seed) {
