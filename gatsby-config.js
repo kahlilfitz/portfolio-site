@@ -5,6 +5,7 @@ module.exports = {
     author: `@kahlilfitz`,
   },
   plugins: [
+    `gatsby-plugin-image`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
