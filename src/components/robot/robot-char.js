@@ -162,6 +162,7 @@ const RobotChar = (props) => {
                 viewBox="0 0 301 357"
                 className="DB Bounce-anim"
                 preserveAspectRatio="xMidYMid meet"
+                overflow="visible"
                 style={{fill: props.fillColor}}>
                 <g>
                     {renderBody(props.charConfig)}
