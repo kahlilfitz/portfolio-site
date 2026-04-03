@@ -159,7 +159,7 @@ const RobotChar = (props) => {
     return (
         <div className="DBContainer">
             <svg version="1.1"
-                viewBox="0 0 301 357"
+                viewBox="-60 0 421 357"
                 className="DB Bounce-anim"
                 preserveAspectRatio="xMidYMid meet"
                 overflow="visible"
