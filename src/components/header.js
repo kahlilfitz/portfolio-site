@@ -2,13 +2,6 @@ import { Link } from 'gatsby'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-const NAV_LINKS = [
-  { label: 'Craps Sim', to: '/craps-sim' },
-  { label: 'Sesh Stats', to: '/sesh-stats' },
-  { label: 'Robot', to: '/robot' },
-  { label: 'Dashboard', to: '/dashboard' },
-]
-
 const Header = ({ siteTitle }) => (
   <header style={{
     background: '#0a0a0a',
@@ -38,28 +31,25 @@ const Header = ({ siteTitle }) => (
         </span>
       </Link>
 
-      <nav style={{ display: 'flex', gap: '1.75rem' }}>
-        {NAV_LINKS.map(({ label, to }) => (
-          <Link
-            key={to}
-            to={to}
-            style={{
-              textDecoration: 'none',
-              color: '#aaa',
-              fontFamily: "'Inter', sans-serif",
-              fontSize: '0.85rem',
-              fontWeight: 500,
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-              transition: 'color 0.15s',
-            }}
-            activeStyle={{ color: '#cc2222' }}
-            onMouseEnter={e => e.currentTarget.style.color = '#2a9a2a'}
-            onMouseLeave={e => e.currentTarget.style.color = '#aaa'}
-          >
-            {label}
-          </Link>
-        ))}
+      <nav>
+        <Link
+          to="/"
+          style={{
+            textDecoration: 'none',
+            color: '#aaa',
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '0.85rem',
+            fontWeight: 500,
+            letterSpacing: '0.04em',
+            textTransform: 'uppercase',
+            transition: 'color 0.15s',
+          }}
+          activeStyle={{ color: '#cc2222' }}
+          onMouseEnter={e => e.currentTarget.style.color = '#2a9a2a'}
+          onMouseLeave={e => e.currentTarget.style.color = '#aaa'}
+        >
+          Apps
+        </Link>
       </nav>
     </div>
   </header>
