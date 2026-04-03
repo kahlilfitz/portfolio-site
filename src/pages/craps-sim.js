@@ -62,8 +62,8 @@ function Die({ value, dieColor }) {
   );
 }
 
-function simulate({ passBet, odds410, odds59, odds68, seed }) {
-  const BUY_IN = 500;
+function simulate({ passBet, odds410, odds59, odds68, seed, buyIn }) {
+  const BUY_IN = buyIn;
   const MAX_ROLLS = 100;
   const rand = mulberry32(seed);
   const rollDice = makeRollDice(rand);
@@ -183,6 +183,7 @@ export default function CrapsSession() {
   const tableRef = useRef(null);
   const historyRef = useRef(null);
 
+  const [buyIn, setBuyIn] = useState(500);
   const [passBet, setPassBet] = useState(25);
   const [odds410, setOdds410] = useState(3);
   const [odds59, setOdds59] = useState(4);
@@ -192,9 +193,9 @@ export default function CrapsSession() {
 
   const run = (replaySeed) => {
     const seed = replaySeed ?? (seedInput.trim() !== "" ? parseInt(seedInput.trim()) >>> 0 : cryptoSeed());
-    const result = simulate({ passBet, odds410, odds59, odds68, seed });
+    const result = simulate({ passBet, odds410, odds59, odds68, seed, buyIn });
     const sessionNum = history.length + 1;
-    const entry = { ...result, sessionNum, passBet, odds410, odds59, odds68 };
+    const entry = { ...result, sessionNum, passBet, odds410, odds59, odds68, buyIn };
     setSession(entry);
     setLastSeed(seed);
     if (!replaySeed) setHistory(prev => [...prev, entry]);
@@ -257,7 +258,7 @@ export default function CrapsSession() {
           CRAPS TABLE
         </h1>
         <div style={{ marginTop: 10, fontFamily: "'Crimson Text', serif", color: "#8ab88a", fontSize: "0.95rem", letterSpacing: "0.08em" }}>
-          $500 Buy-In &nbsp;·&nbsp; ${passBet} Pass Line &nbsp;·&nbsp; {odds410}/{odds59}/{odds68}× Odds &nbsp;·&nbsp; 100 Roll Cap
+          ${buyIn} Buy-In &nbsp;·&nbsp; ${passBet} Pass Line &nbsp;·&nbsp; {odds410}/{odds59}/{odds68}× Odds &nbsp;·&nbsp; 100 Roll Cap
         </div>
       </div>
 
@@ -268,6 +269,20 @@ export default function CrapsSession() {
           background: "rgba(0,0,0,0.22)", padding: "28px 36px",
           display: "flex", flexWrap: "wrap", gap: 32, alignItems: "flex-end", justifyContent: "center"
         }}>
+
+          {/* Buy-in */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+            <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.55rem", letterSpacing: "0.25em", color: "#4a7a4a", textTransform: "uppercase", marginBottom: 6 }}>Buy-In</div>
+            <NumInput
+              label="Starting Amount"
+              value={buyIn}
+              onChange={setBuyIn}
+              min={25} max={10000} step={25}
+              sublabel={`$${buyIn} starting bankroll`}
+            />
+          </div>
+
+          <div style={{ width: 1, background: "rgba(212,175,55,0.15)", alignSelf: "stretch" }} />
 
           {/* Pass bet */}
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
