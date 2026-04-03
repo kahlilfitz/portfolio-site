@@ -98,7 +98,7 @@ const IndexPage = () => (
         color: '#777',
         margin: 0,
       }}>
-        Software Engineer
+        AI Zen Master
       </p>
     </div>
 
