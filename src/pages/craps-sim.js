@@ -444,6 +444,22 @@ export default function CrapsSession() {
                     );
                   })}
                 </tbody>
+                <tfoot>
+                  {(() => {
+                    const total = history.reduce((sum, s) => sum + s.netResult, 0);
+                    const color = total > 0 ? "#6dca6d" : total < 0 ? "#ca6d6d" : "#5a7a5a";
+                    return (
+                      <tr style={{ borderTop: "1px solid rgba(212,175,55,0.25)" }}>
+                        <td colSpan={6} style={{ padding: "10px 10px", fontFamily: "'Cinzel', serif", fontSize: "0.58rem", letterSpacing: "0.18em", color: "#5a8a5a", textTransform: "uppercase" }}>
+                          All-time Total
+                        </td>
+                        <td style={{ padding: "10px 10px", fontFamily: "'Cinzel', serif", fontSize: "0.95rem", fontWeight: 700, color }}>
+                          {total > 0 ? `+$${fmt(total)}` : total < 0 ? `-$${fmt(Math.abs(total))}` : "—"}
+                        </td>
+                      </tr>
+                    );
+                  })()}
+                </tfoot>
               </table>
             </div>
           </div>
