@@ -62,7 +62,7 @@ function Die({ value, dieColor }) {
   );
 }
 
-function simulate({ passBet, odds410, odds59, odds68, seed, buyIn }) {
+function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit }) {
   const BUY_IN = buyIn;
   const MAX_ROLLS = 100;
   const rand = mulberry32(seed);
@@ -120,11 +120,13 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn }) {
         passLineBet = 0; oddsBet = 0; point = null;
       } else if (roll.total === 7) {
         const lost = passLineBet + oddsBet;
-        const detail = pastCap ? `Seven out — session closed` : `Seven out`;
+        const net = bankroll - BUY_IN;
+        const profitStop = stopAtProfit > 0 && net >= stopAtProfit;
+        const detail = pastCap ? `Seven out — session closed` : profitStop ? `Seven out — profit target reached` : `Seven out`;
         rolls.push({ roll: rollCount, dice: roll, phase: "point", result: "LOSS", detail, bankroll, net: -lost, point, pastCap });
         passLineBet = 0; oddsBet = 0; point = null;
         if (bankroll > highWater) { highWater = bankroll; highWaterRoll = rollCount; }
-        if (pastCap) break;
+        if (pastCap || profitStop) break;
       } else {
         rolls.push({ roll: rollCount, dice: roll, phase: "point", result: "NEUTRAL", detail: `${roll.total} — need ${point}`, bankroll, net: 0, point, pastCap });
       }
@@ -190,10 +192,11 @@ export default function CrapsSession() {
   const [odds68, setOdds68] = useState(5);
   const [seedInput, setSeedInput] = useState("");
   const [lastSeed, setLastSeed] = useState(null);
+  const [stopAtProfit, setStopAtProfit] = useState(0);
 
   const run = (replaySeed) => {
     const seed = replaySeed ?? (seedInput.trim() !== "" ? parseInt(seedInput.trim()) >>> 0 : cryptoSeed());
-    const result = simulate({ passBet, odds410, odds59, odds68, seed, buyIn });
+    const result = simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit });
     const sessionNum = history.length + 1;
     const entry = { ...result, sessionNum, passBet, odds410, odds59, odds68, buyIn };
     setSession(entry);
@@ -258,7 +261,7 @@ export default function CrapsSession() {
           CRAPS TABLE
         </h1>
         <div style={{ marginTop: 10, fontFamily: "'Crimson Text', serif", color: "#8ab88a", fontSize: "0.95rem", letterSpacing: "0.08em" }}>
-          ${buyIn} Buy-In &nbsp;·&nbsp; ${passBet} Pass Line &nbsp;·&nbsp; {odds410}/{odds59}/{odds68}× Odds &nbsp;·&nbsp; 100 Roll Cap
+          ${buyIn} Buy-In &nbsp;·&nbsp; ${passBet} Pass Line &nbsp;·&nbsp; {odds410}/{odds59}/{odds68}× Odds &nbsp;·&nbsp; 100 Roll Cap{stopAtProfit > 0 ? ` · Stop +$${stopAtProfit}` : ""}
         </div>
       </div>
 
@@ -335,6 +338,20 @@ export default function CrapsSession() {
               ${maxExposure}
             </div>
             <div style={{ fontFamily: "'Crimson Text', serif", fontSize: "0.78rem", color: "#4a7a4a", fontStyle: "italic", textAlign: "center" }}>worst-case<br/>per hand</div>
+          </div>
+
+          <div style={{ width: 1, background: "rgba(212,175,55,0.15)", alignSelf: "stretch" }} />
+
+          {/* Stop at profit */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+            <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.55rem", letterSpacing: "0.25em", color: "#4a7a4a", textTransform: "uppercase", marginBottom: 6 }}>Stop at Profit</div>
+            <NumInput
+              label="On 7-Out"
+              value={stopAtProfit}
+              onChange={setStopAtProfit}
+              min={0} max={10000} step={25}
+              sublabel={stopAtProfit === 0 ? "Disabled" : `Stop if +$${stopAtProfit} on 7-out`}
+            />
           </div>
 
         </div>
