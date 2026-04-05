@@ -194,6 +194,7 @@ export default function CrapsSession() {
   const [lastSeed, setLastSeed] = useState(null);
   const [stopAtProfit, setStopAtProfit] = useState(0);
   const [autoRunCount, setAutoRunCount] = useState(1);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const run = (replaySeed) => {
     const count = replaySeed ? 1 : autoRunCount;
@@ -213,7 +214,6 @@ export default function CrapsSession() {
     setLastSeed(lastEntry.seed);
     if (!replaySeed) setHistory(prev => [...prev, ...newEntries]);
     setView("all");
-    setTimeout(() => tableRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   };
 
   const filtered = session ? (
@@ -535,12 +535,19 @@ export default function CrapsSession() {
         const bestNet = Math.max(...history.map(s => s.netResult));
         const bestPeak = Math.max(...history.map(s => s.highWater));
         return (
-          <div ref={historyRef} style={{ padding: "0 16px 32px", borderBottom: "1px solid rgba(212,175,55,0.15)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 14 }}>
-              <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.72rem", letterSpacing: "0.2em", color: "#5a8a5a", textTransform: "uppercase" }}>Session History</div>
-              <div style={{ flex: 1, height: 1, background: "rgba(212,175,55,0.12)" }} />
-              <div style={{ fontFamily: "'Crimson Text', serif", fontSize: "0.82rem", color: "#4a7a4a", fontStyle: "italic" }}>{history.length} session{history.length !== 1 ? "s" : ""} played</div>
-            </div>
+          <div ref={historyRef} style={{ borderBottom: "1px solid rgba(212,175,55,0.15)" }}>
+            <button
+              onClick={() => setHistoryOpen(o => !o)}
+              style={{ width: "100%", background: "none", border: "none", cursor: "pointer", padding: "16px 16px" }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.72rem", letterSpacing: "0.2em", color: "#5a8a5a", textTransform: "uppercase" }}>Session History</div>
+                <div style={{ flex: 1, height: 1, background: "rgba(212,175,55,0.12)" }} />
+                <div style={{ fontFamily: "'Crimson Text', serif", fontSize: "0.82rem", color: "#4a7a4a", fontStyle: "italic" }}>{history.length} session{history.length !== 1 ? "s" : ""}</div>
+                <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.65rem", color: "#5a7a5a", marginLeft: 4 }}>{historyOpen ? "▲" : "▼"}</div>
+              </div>
+            </button>
+            {historyOpen && <div style={{ padding: "0 16px 24px" }}>
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 480 }}>
                 <thead>
@@ -551,7 +558,7 @@ export default function CrapsSession() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[...history].reverse().map((s, ri) => {
+                  {[...history].reverse().slice(0, 20).map((s, ri) => {
                     const isBestNet = s.netResult === bestNet;
                     const isBestPeak = s.highWater === bestPeak;
                     const isCurrent = s.sessionNum === session?.sessionNum;
@@ -603,6 +610,12 @@ export default function CrapsSession() {
                 </tfoot>
               </table>
             </div>
+            {history.length > 20 && (
+              <div style={{ fontFamily: "'Crimson Text', serif", fontSize: "0.78rem", color: "#3a5a3a", fontStyle: "italic", textAlign: "center", paddingTop: 10 }}>
+                showing 20 of {history.length} sessions
+              </div>
+            )}
+            </div>}
           </div>
         );
       })()}
