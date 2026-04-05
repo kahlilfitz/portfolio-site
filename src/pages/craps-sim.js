@@ -195,6 +195,8 @@ export default function CrapsSession() {
   const [stopAtProfit, setStopAtProfit] = useState(0);
   const [autoRunCount, setAutoRunCount] = useState(1);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [sortCol, setSortCol] = useState("Num");
+  const [sortDir, setSortDir] = useState("desc");
   const [intervalMs, setIntervalMs] = useState(1000);
   const [maxSessions, setMaxSessions] = useState(100);
   const [running, setRunning] = useState(false);
@@ -264,6 +266,22 @@ export default function CrapsSession() {
 
   const fmt = (n) => Math.round(n * 100) / 100;
   const maxExposure = passBet + Math.max(passBet * odds410, passBet * odds59, passBet * odds68);
+
+  const sortKeyMap = { Num: "sessionNum", Pass: "passBet", Rolls: "totalRolls", Peak: "highWater", Final: "finalBankroll", Net: "netResult" };
+  const onSort = (col) => {
+    if (col === "Odds") return;
+    setSortCol(col);
+    setSortDir(prev => sortCol === col && prev === "desc" ? "asc" : "desc");
+  };
+  const sortedHistory = [...history].sort((a, b) => {
+    const key = sortKeyMap[sortCol];
+    if (!key) return 0;
+    return sortDir === "asc" ? a[key] - b[key] : b[key] - a[key];
+  });
+  const historyCols = [
+    { key: "Num", label: "#" }, { key: "Pass", label: "Pass" }, { key: "Odds", label: "Odds" },
+    { key: "Rolls", label: "Rolls" }, { key: "Peak", label: "Peak" }, { key: "Final", label: "Final" }, { key: "Net", label: "Net" },
+  ];
 
   return (
     <div style={{
@@ -632,17 +650,34 @@ export default function CrapsSession() {
               >Clear</button>
             </div>
             {historyOpen && <div style={{ padding: "0 16px 24px" }}>
-            <div style={{ overflowX: "auto" }}>
+              <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 480 }}>
                 <thead>
                   <tr style={{ borderBottom: "1px solid rgba(212,175,55,0.2)" }}>
-                    {["#", "Pass", "Odds", "Rolls", "Peak", "Final", "Net"].map(h => (
-                      <th key={h} style={{ fontFamily: "'Cinzel', serif", fontSize: "0.58rem", letterSpacing: "0.18em", color: "#4a7a4a", textTransform: "uppercase", padding: "7px 10px", textAlign: h === "#" ? "center" : "left", fontWeight: 400 }}>{h}</th>
-                    ))}
+                    {historyCols.map(({ key, label }) => {
+                      const active = sortCol === key;
+                      const sortable = key !== "Odds";
+                      return (
+                        <th
+                          key={key}
+                          onClick={() => onSort(key)}
+                          style={{
+                            fontFamily: "'Cinzel', serif", fontSize: "0.58rem", letterSpacing: "0.18em",
+                            color: active ? "#d4af37" : "#4a7a4a", textTransform: "uppercase",
+                            padding: "7px 10px", textAlign: key === "Num" ? "center" : "left",
+                            fontWeight: active ? 700 : 400, cursor: sortable ? "pointer" : "default",
+                            userSelect: "none", whiteSpace: "nowrap",
+                            transition: "color 0.15s"
+                          }}
+                        >
+                          {label}{active ? (sortDir === "asc" ? " ▲" : " ▼") : sortable ? " ·" : ""}
+                        </th>
+                      );
+                    })}
                   </tr>
                 </thead>
                 <tbody>
-                  {[...history].reverse().slice(0, 20).map((s, ri) => {
+                  {sortedHistory.slice(0, 20).map((s, ri) => {
                     const isBestNet = s.netResult === bestNet;
                     const isBestPeak = s.highWater === bestPeak;
                     const isCurrent = s.sessionNum === session?.sessionNum;
