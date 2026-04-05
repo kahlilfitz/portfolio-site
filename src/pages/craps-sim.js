@@ -195,7 +195,7 @@ export default function CrapsSession() {
   const [stopAtProfit, setStopAtProfit] = useState(0);
   const [autoRunCount, setAutoRunCount] = useState(1);
   const [historyOpen, setHistoryOpen] = useState(false);
-  const [intervalSecs, setIntervalSecs] = useState(5);
+  const [intervalMs, setIntervalMs] = useState(1000);
   const [maxSessions, setMaxSessions] = useState(100);
   const [running, setRunning] = useState(false);
 
@@ -250,7 +250,7 @@ export default function CrapsSession() {
   const startLoop = () => {
     setRunning(true);
     runLatest.current();
-    intervalRef.current = setInterval(() => runLatest.current(), intervalSecs * 1000);
+    intervalRef.current = setInterval(() => runLatest.current(), intervalMs);
   };
 
   // Clean up interval on unmount
@@ -418,11 +418,11 @@ export default function CrapsSession() {
                 sublabel={autoRunCount === 1 ? "1 session per tick" : `${autoRunCount} sessions per tick`}
               />
               <NumInput
-                label="Every (secs)"
-                value={intervalSecs}
-                onChange={setIntervalSecs}
-                min={1} max={60} step={1}
-                sublabel={`${intervalSecs}s between ticks`}
+                label="Every (ms)"
+                value={intervalMs}
+                onChange={setIntervalMs}
+                min={100} max={60000} step={100}
+                sublabel={`${intervalMs}ms between ticks`}
               />
               <NumInput
                 label="Max Sessions"
@@ -459,7 +459,7 @@ export default function CrapsSession() {
         </div>
         {running && (
           <div style={{ fontFamily: "'Crimson Text', serif", fontSize: "0.88rem", color: "#8ab88a", fontStyle: "italic" }}>
-            {history.length} / {maxSessions} sessions · next tick in {intervalSecs}s
+            {history.length} / {maxSessions} sessions · {intervalMs}ms between ticks
           </div>
         )}
 
