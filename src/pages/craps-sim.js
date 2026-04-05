@@ -536,17 +536,25 @@ export default function CrapsSession() {
         const bestPeak = Math.max(...history.map(s => s.highWater));
         return (
           <div ref={historyRef} style={{ borderBottom: "1px solid rgba(212,175,55,0.15)" }}>
-            <button
-              onClick={() => setHistoryOpen(o => !o)}
-              style={{ width: "100%", background: "none", border: "none", cursor: "pointer", padding: "16px 16px" }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.72rem", letterSpacing: "0.2em", color: "#5a8a5a", textTransform: "uppercase" }}>Session History</div>
-                <div style={{ flex: 1, height: 1, background: "rgba(212,175,55,0.12)" }} />
-                <div style={{ fontFamily: "'Crimson Text', serif", fontSize: "0.82rem", color: "#4a7a4a", fontStyle: "italic" }}>{history.length} session{history.length !== 1 ? "s" : ""}</div>
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.65rem", color: "#5a7a5a", marginLeft: 4 }}>{historyOpen ? "▲" : "▼"}</div>
-              </div>
-            </button>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <button
+                onClick={() => setHistoryOpen(o => !o)}
+                style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "16px 16px" }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.72rem", letterSpacing: "0.2em", color: "#5a8a5a", textTransform: "uppercase" }}>Session History</div>
+                  <div style={{ flex: 1, height: 1, background: "rgba(212,175,55,0.12)" }} />
+                  <div style={{ fontFamily: "'Crimson Text', serif", fontSize: "0.82rem", color: "#4a7a4a", fontStyle: "italic" }}>{history.length} session{history.length !== 1 ? "s" : ""}</div>
+                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.65rem", color: "#5a7a5a", marginLeft: 4 }}>{historyOpen ? "▲" : "▼"}</div>
+                </div>
+              </button>
+              <button
+                onClick={() => { setHistory([]); setSession(null); }}
+                style={{ background: "transparent", border: "1px solid rgba(202,109,109,0.3)", color: "#8a5a5a", fontFamily: "'Cinzel', serif", fontSize: "0.55rem", letterSpacing: "0.12em", padding: "4px 10px", cursor: "pointer", borderRadius: 2, textTransform: "uppercase", transition: "all 0.15s", marginRight: 16, flexShrink: 0 }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(202,109,109,0.7)"; e.currentTarget.style.color = "#ca6d6d"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(202,109,109,0.3)"; e.currentTarget.style.color = "#8a5a5a"; }}
+              >Clear</button>
+            </div>
             {historyOpen && <div style={{ padding: "0 16px 24px" }}>
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 480 }}>
