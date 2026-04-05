@@ -193,15 +193,25 @@ export default function CrapsSession() {
   const [seedInput, setSeedInput] = useState("");
   const [lastSeed, setLastSeed] = useState(null);
   const [stopAtProfit, setStopAtProfit] = useState(0);
+  const [autoRunCount, setAutoRunCount] = useState(1);
 
   const run = (replaySeed) => {
-    const seed = replaySeed ?? (seedInput.trim() !== "" ? parseInt(seedInput.trim()) >>> 0 : cryptoSeed());
-    const result = simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit });
-    const sessionNum = history.length + 1;
-    const entry = { ...result, sessionNum, passBet, odds410, odds59, odds68, buyIn };
-    setSession(entry);
-    setLastSeed(seed);
-    if (!replaySeed) setHistory(prev => [...prev, entry]);
+    const count = replaySeed ? 1 : autoRunCount;
+    const baseSessionNum = history.length + 1;
+    const newEntries = [];
+
+    for (let i = 0; i < count; i++) {
+      const seed = replaySeed && i === 0 ? replaySeed :
+                   i === 0 && seedInput.trim() !== "" ? parseInt(seedInput.trim()) >>> 0 :
+                   cryptoSeed();
+      const result = simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit });
+      newEntries.push({ ...result, sessionNum: baseSessionNum + i, passBet, odds410, odds59, odds68, buyIn });
+    }
+
+    const lastEntry = newEntries[newEntries.length - 1];
+    setSession(lastEntry);
+    setLastSeed(lastEntry.seed);
+    if (!replaySeed) setHistory(prev => [...prev, ...newEntries]);
     setView("all");
     setTimeout(() => tableRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   };
@@ -354,13 +364,27 @@ export default function CrapsSession() {
             />
           </div>
 
+          <div style={{ width: 1, background: "rgba(212,175,55,0.15)", alignSelf: "stretch" }} />
+
+          {/* Auto-run sessions */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+            <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.55rem", letterSpacing: "0.25em", color: "#4a7a4a", textTransform: "uppercase", marginBottom: 6 }}>Auto-Run</div>
+            <NumInput
+              label="Sessions"
+              value={autoRunCount}
+              onChange={setAutoRunCount}
+              min={1} max={500} step={1}
+              sublabel={autoRunCount === 1 ? "Single session" : `${autoRunCount} sessions at once`}
+            />
+          </div>
+
         </div>
       </div>
 
       {/* Roll button + seed controls */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, paddingBottom: 36 }}>
         <button className="btn-main" onClick={() => run()}>
-          {session ? "New Session" : "Roll the Bones"}
+          {autoRunCount > 1 ? `Run ${autoRunCount} Sessions` : session ? "New Session" : "Roll the Bones"}
         </button>
 
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
