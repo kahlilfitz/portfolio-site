@@ -682,10 +682,10 @@ export default function CrapsSession() {
                     const isBestPeak = s.highWater === bestPeak;
                     const isCurrent = s.sessionNum === session?.sessionNum;
                     return (
-                      <tr key={s.sessionNum} style={{
+                      <tr key={s.sessionNum} onClick={() => { setSession(s); setView("all"); }} style={{
                         background: isCurrent ? "rgba(212,175,55,0.07)" : ri % 2 === 0 ? "rgba(255,255,255,0.012)" : "transparent",
                         borderBottom: "1px solid rgba(255,255,255,0.04)",
-                        transition: "background 0.2s"
+                        transition: "background 0.2s", cursor: "pointer"
                       }}>
                         <td style={{ padding: "8px 10px", textAlign: "center", fontFamily: "'Cinzel', serif", fontSize: "0.78rem", color: isCurrent ? "#d4af37" : "#4a7a4a" }}>
                           {isCurrent ? "▶" : ""}{s.sessionNum}
