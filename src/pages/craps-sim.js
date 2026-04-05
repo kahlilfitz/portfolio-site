@@ -430,6 +430,106 @@ export default function CrapsSession() {
         </div>
       </div>
 
+      {/* Aggregate Summary */}
+      {history.length > 0 && (() => {
+        const nets = history.map(s => s.netResult);
+        const total = nets.reduce((a, b) => a + b, 0);
+        const wins = nets.filter(n => n > 0).length;
+        const winRate = (wins / nets.length) * 100;
+        const avg = total / nets.length;
+        const sorted = [...nets].sort((a, b) => a - b);
+        const median = sorted.length % 2 === 0
+          ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
+          : sorted[Math.floor(sorted.length / 2)];
+
+        // Histogram buckets
+        const min = Math.min(...nets);
+        const max = Math.max(...nets);
+        const bucketCount = 12;
+        const bucketSize = Math.max(25, Math.ceil((max - min) / bucketCount / 25) * 25);
+        const bucketStart = Math.floor(min / bucketSize) * bucketSize;
+        const buckets = [];
+        for (let i = bucketStart; buckets.length < bucketCount + 2; i += bucketSize) {
+          buckets.push({ lo: i, hi: i + bucketSize, count: 0 });
+        }
+        nets.forEach(n => {
+          const b = buckets.find(b => n >= b.lo && n < b.hi);
+          if (b) b.count++;
+        });
+        const trimmed = buckets.filter((b, i) => {
+          if (b.count > 0) return true;
+          const prev = buckets[i - 1];
+          const next = buckets[i + 1];
+          return (prev && prev.count > 0) || (next && next.count > 0);
+        });
+        const maxCount = Math.max(...trimmed.map(b => b.count));
+
+        return (
+          <div style={{ padding: "28px 24px", borderBottom: "1px solid rgba(212,175,55,0.15)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
+              <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.72rem", letterSpacing: "0.2em", color: "#5a8a5a", textTransform: "uppercase" }}>Summary</div>
+              <div style={{ flex: 1, height: 1, background: "rgba(212,175,55,0.12)" }} />
+            </div>
+
+            {/* Stat cards */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 28, justifyContent: "center" }}>
+              {[
+                { label: "Win Rate", value: `${winRate.toFixed(1)}%`, color: winRate >= 50 ? "#6dca6d" : "#ca6d6d" },
+                { label: "Avg Net", value: avg >= 0 ? `+$${fmt(avg)}` : `-$${fmt(Math.abs(avg))}`, color: avg >= 0 ? "#6dca6d" : "#ca6d6d" },
+                { label: "Median Net", value: median >= 0 ? `+$${fmt(median)}` : `-$${fmt(Math.abs(median))}`, color: median >= 0 ? "#6dca6d" : "#ca6d6d" },
+                { label: "Total Net", value: total >= 0 ? `+$${fmt(total)}` : `-$${fmt(Math.abs(total))}`, color: total >= 0 ? "#6dca6d" : "#ca6d6d" },
+                { label: "Best", value: `+$${fmt(Math.max(...nets))}`, color: "#6dca6d" },
+                { label: "Worst", value: `${Math.min(...nets) >= 0 ? "+" : "-"}$${fmt(Math.abs(Math.min(...nets)))}`, color: "#ca6d6d" },
+              ].map(({ label, value, color }) => (
+                <div key={label} style={{
+                  flex: "1 1 100px", minWidth: 100, maxWidth: 160,
+                  background: "rgba(0,0,0,0.25)", border: "1px solid rgba(212,175,55,0.15)",
+                  borderRadius: 3, padding: "14px 16px", textAlign: "center"
+                }}>
+                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: "1.1rem", fontWeight: 700, color }}>{value}</div>
+                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.55rem", letterSpacing: "0.18em", color: "#4a7a4a", textTransform: "uppercase", marginTop: 5 }}>{label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Distribution histogram */}
+            {trimmed.length > 1 && (
+              <div>
+                <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.58rem", letterSpacing: "0.18em", color: "#4a7a4a", textTransform: "uppercase", marginBottom: 10 }}>Outcome Distribution</div>
+                <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 72 }}>
+                  {trimmed.map((b, i) => {
+                    const height = maxCount > 0 ? Math.max(2, (b.count / maxCount) * 72) : 2;
+                    const isProfit = b.lo >= 0;
+                    const isLoss = b.hi <= 0;
+                    const barColor = isProfit ? "rgba(109,202,109,0.65)" : isLoss ? "rgba(202,109,109,0.65)" : "rgba(212,175,55,0.5)";
+                    const borderColor = isProfit ? "#6dca6d" : isLoss ? "#ca6d6d" : "#d4af37";
+                    return (
+                      <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, height: "100%", justifyContent: "flex-end" }}>
+                        {b.count > 0 && (
+                          <div style={{ fontFamily: "monospace", fontSize: "0.6rem", color: "#5a7a5a", lineHeight: 1 }}>{b.count}</div>
+                        )}
+                        <div style={{
+                          width: "100%", height, background: barColor,
+                          border: `1px solid ${borderColor}`, borderRadius: "2px 2px 0 0",
+                          opacity: b.count === 0 ? 0.15 : 1
+                        }} />
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{ display: "flex", gap: 3, marginTop: 4 }}>
+                  {trimmed.map((b, i) => (
+                    <div key={i} style={{ flex: 1, textAlign: "center", fontFamily: "monospace", fontSize: "0.52rem", color: "#3a5a3a", lineHeight: 1.2 }}>
+                      {b.lo >= 0 ? `+${b.lo}` : b.lo}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
       {/* Session History Leaderboard */}
       {history.length > 0 && (() => {
         const bestNet = Math.max(...history.map(s => s.netResult));
