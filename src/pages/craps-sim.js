@@ -84,6 +84,7 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit 
   let passLineBet = 0;
   let oddsBet = 0;
   let pastCap = false;
+  let pointsMade = 0;
 
   while (bankroll >= passBet) {
     if (rollCount >= MAX_ROLLS) pastCap = true;
@@ -117,16 +118,21 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit 
         bankroll += passLineBet * 2 + oddsBet + oddsWin;
         const net = passLineBet + oddsWin;
         rolls.push({ roll: rollCount, dice: roll, phase: "point", result: "WIN", detail: `Made the ${point}!`, bankroll, net, point, pastCap });
-        passLineBet = 0; oddsBet = 0; point = null;
+        passLineBet = 0; oddsBet = 0; point = null; pointsMade++;
       } else if (roll.total === 7) {
         const lost = passLineBet + oddsBet;
-        const net = bankroll - BUY_IN;
-        const profitStop = stopAtProfit > 0 && net >= stopAtProfit;
-        const detail = pastCap ? `Seven out — session closed` : profitStop ? `Seven out — profit target reached` : `Seven out`;
+        const preHandBankroll = bankroll + passLineBet + oddsBet;
+        const maxExposure = passBet + Math.max(passBet * odds410, passBet * odds59, passBet * odds68);
+        const profitStop = stopAtProfit > 0 && (preHandBankroll - BUY_IN) >= stopAtProfit;
+        const exposureStop = bankroll < maxExposure;
+        const detail = profitStop ? `Seven out — profit target reached`
+          : exposureStop ? `Seven out — insufficient funds`
+          : pastCap ? `Seven out — session closed`
+          : `Seven out`;
         rolls.push({ roll: rollCount, dice: roll, phase: "point", result: "LOSS", detail, bankroll, net: -lost, point, pastCap });
         passLineBet = 0; oddsBet = 0; point = null;
         if (bankroll > highWater) { highWater = bankroll; highWaterRoll = rollCount; }
-        if (pastCap || profitStop) break;
+        if (profitStop || exposureStop || pastCap) break;
       } else {
         rolls.push({ roll: rollCount, dice: roll, phase: "point", result: "NEUTRAL", detail: `${roll.total} — need ${point}`, bankroll, net: 0, point, pastCap });
       }
@@ -137,7 +143,7 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit 
 
   if (point !== null) bankroll += passLineBet + oddsBet;
 
-  return { rolls, finalBankroll: bankroll, highWater, highWaterRoll, totalRolls: rollCount, netResult: bankroll - BUY_IN, seed };
+  return { rolls, finalBankroll: bankroll, highWater, highWaterRoll, totalRolls: rollCount, netResult: bankroll - BUY_IN, seed, pointsMade };
 }
 
 function NumInput({ label, sublabel, value, onChange, min = 0, max = 100, step = 1 }) {
@@ -267,7 +273,7 @@ export default function CrapsSession() {
   const fmt = (n) => Math.round(n * 100) / 100;
   const maxExposure = passBet + Math.max(passBet * odds410, passBet * odds59, passBet * odds68);
 
-  const sortKeyMap = { Num: "sessionNum", Pass: "passBet", Rolls: "totalRolls", Peak: "highWater", Final: "finalBankroll", Net: "netResult" };
+  const sortKeyMap = { Num: "sessionNum", Pass: "passBet", Rolls: "totalRolls", Pts: "pointsMade", Peak: "highWater", Final: "finalBankroll", Net: "netResult" };
   const onSort = (col) => {
     if (col === "Odds") return;
     setSortCol(col);
@@ -280,7 +286,7 @@ export default function CrapsSession() {
   });
   const historyCols = [
     { key: "Num", label: "#" }, { key: "Pass", label: "Pass" }, { key: "Odds", label: "Odds" },
-    { key: "Rolls", label: "Rolls" }, { key: "Peak", label: "Peak" }, { key: "Final", label: "Final" }, { key: "Net", label: "Net" },
+    { key: "Rolls", label: "Rolls" }, { key: "Pts", label: "Pts" }, { key: "Peak", label: "Peak" }, { key: "Final", label: "Final" }, { key: "Net", label: "Net" },
   ];
 
   return (
@@ -693,6 +699,7 @@ export default function CrapsSession() {
                         <td style={{ padding: "8px 10px", fontFamily: "'Crimson Text', serif", fontSize: "0.85rem", color: "#8ab88a" }}>${s.passBet}</td>
                         <td style={{ padding: "8px 10px", fontFamily: "'Crimson Text', serif", fontSize: "0.85rem", color: "#6a8a6a" }}>{s.odds410}/{s.odds59}/{s.odds68}×</td>
                         <td style={{ padding: "8px 10px", fontFamily: "'Crimson Text', serif", fontSize: "0.85rem", color: "#6a8a6a" }}>{s.totalRolls}</td>
+                        <td style={{ padding: "8px 10px", fontFamily: "'Crimson Text', serif", fontSize: "0.85rem", color: "#8ab88a" }}>{s.pointsMade ?? "—"}</td>
                         <td style={{ padding: "8px 10px", fontFamily: "'Cinzel', serif", fontSize: "0.88rem", position: "relative" }}>
                           <span style={{ color: isBestPeak ? "#d4af37" : "#a0b890" }}>
                             ${s.highWater}
@@ -717,7 +724,7 @@ export default function CrapsSession() {
                     const color = total > 0 ? "#6dca6d" : total < 0 ? "#ca6d6d" : "#5a7a5a";
                     return (
                       <tr style={{ borderTop: "1px solid rgba(212,175,55,0.25)" }}>
-                        <td colSpan={6} style={{ padding: "10px 10px", fontFamily: "'Cinzel', serif", fontSize: "0.58rem", letterSpacing: "0.18em", color: "#5a8a5a", textTransform: "uppercase" }}>
+                        <td colSpan={7} style={{ padding: "10px 10px", fontFamily: "'Cinzel', serif", fontSize: "0.58rem", letterSpacing: "0.18em", color: "#5a8a5a", textTransform: "uppercase" }}>
                           All-time Total
                         </td>
                         <td style={{ padding: "10px 10px", fontFamily: "'Cinzel', serif", fontSize: "0.95rem", fontWeight: 700, color }}>
