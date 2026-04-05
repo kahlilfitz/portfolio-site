@@ -122,12 +122,17 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit 
       } else if (roll.total === 7) {
         const lost = passLineBet + oddsBet;
         const net = bankroll - BUY_IN;
+        const maxExposure = passBet + Math.max(passBet * odds410, passBet * odds59, passBet * odds68);
         const profitStop = stopAtProfit > 0 && net >= stopAtProfit;
-        const detail = pastCap ? `Seven out — session closed` : profitStop ? `Seven out — profit target reached` : `Seven out`;
+        const exposureStop = bankroll < maxExposure;
+        const detail = pastCap ? `Seven out — session closed`
+          : profitStop ? `Seven out — profit target reached`
+          : exposureStop ? `Seven out — insufficient funds`
+          : `Seven out`;
         rolls.push({ roll: rollCount, dice: roll, phase: "point", result: "LOSS", detail, bankroll, net: -lost, point, pastCap });
         passLineBet = 0; oddsBet = 0; point = null;
         if (bankroll > highWater) { highWater = bankroll; highWaterRoll = rollCount; }
-        if (pastCap || profitStop) break;
+        if (pastCap || profitStop || exposureStop) break;
       } else {
         rolls.push({ roll: rollCount, dice: roll, phase: "point", result: "NEUTRAL", detail: `${roll.total} — need ${point}`, bankroll, net: 0, point, pastCap });
       }
