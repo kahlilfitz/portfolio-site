@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 // Mulberry32 — fast, high-quality 32-bit seeded PRNG
 function mulberry32(seed) {
@@ -195,13 +195,37 @@ export default function CrapsSession() {
   const [stopAtProfit, setStopAtProfit] = useState(0);
   const [autoRunCount, setAutoRunCount] = useState(1);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [intervalSecs, setIntervalSecs] = useState(5);
+  const [maxSessions, setMaxSessions] = useState(100);
+  const [running, setRunning] = useState(false);
+
+  const intervalRef = useRef(null);
+  const sessionCountRef = useRef(0);
+  const runLatest = useRef(null);
+
+  const stopLoop = () => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+    setRunning(false);
+  };
 
   const run = (replaySeed) => {
     const count = replaySeed ? 1 : autoRunCount;
-    const baseSessionNum = history.length + 1;
+    const currentCount = sessionCountRef.current;
+
+    if (!replaySeed && maxSessions > 0 && currentCount >= maxSessions) {
+      stopLoop();
+      return;
+    }
+
+    const actualCount = (!replaySeed && maxSessions > 0)
+      ? Math.min(count, maxSessions - currentCount)
+      : count;
+
+    const baseSessionNum = currentCount + 1;
     const newEntries = [];
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < actualCount; i++) {
       const seed = replaySeed && i === 0 ? replaySeed :
                    i === 0 && seedInput.trim() !== "" ? parseInt(seedInput.trim()) >>> 0 :
                    cryptoSeed();
@@ -212,9 +236,25 @@ export default function CrapsSession() {
     const lastEntry = newEntries[newEntries.length - 1];
     setSession(lastEntry);
     setLastSeed(lastEntry.seed);
-    if (!replaySeed) setHistory(prev => [...prev, ...newEntries]);
+    if (!replaySeed) {
+      setHistory(prev => [...prev, ...newEntries]);
+      sessionCountRef.current += actualCount;
+      if (maxSessions > 0 && sessionCountRef.current >= maxSessions) stopLoop();
+    }
     setView("all");
   };
+
+  // Always keep runLatest pointing at the freshest closure
+  runLatest.current = run;
+
+  const startLoop = () => {
+    setRunning(true);
+    runLatest.current();
+    intervalRef.current = setInterval(() => runLatest.current(), intervalSecs * 1000);
+  };
+
+  // Clean up interval on unmount
+  useEffect(() => () => clearInterval(intervalRef.current), []);
 
   const filtered = session ? (
     view === "all" ? session.rolls :
@@ -369,13 +409,29 @@ export default function CrapsSession() {
           {/* Auto-run sessions */}
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
             <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.55rem", letterSpacing: "0.25em", color: "#4a7a4a", textTransform: "uppercase", marginBottom: 6 }}>Auto-Run</div>
-            <NumInput
-              label="Sessions"
-              value={autoRunCount}
-              onChange={setAutoRunCount}
-              min={1} max={500} step={1}
-              sublabel={autoRunCount === 1 ? "Single session" : `${autoRunCount} sessions at once`}
-            />
+            <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center" }}>
+              <NumInput
+                label="Sessions / Tick"
+                value={autoRunCount}
+                onChange={setAutoRunCount}
+                min={1} max={100} step={1}
+                sublabel={autoRunCount === 1 ? "1 session per tick" : `${autoRunCount} sessions per tick`}
+              />
+              <NumInput
+                label="Every (secs)"
+                value={intervalSecs}
+                onChange={setIntervalSecs}
+                min={1} max={60} step={1}
+                sublabel={`${intervalSecs}s between ticks`}
+              />
+              <NumInput
+                label="Max Sessions"
+                value={maxSessions}
+                onChange={setMaxSessions}
+                min={1} max={10000} step={1}
+                sublabel={`Stop at ${maxSessions} total`}
+              />
+            </div>
           </div>
 
         </div>
@@ -383,9 +439,29 @@ export default function CrapsSession() {
 
       {/* Roll button + seed controls */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, paddingBottom: 36 }}>
-        <button className="btn-main" onClick={() => run()}>
-          {autoRunCount > 1 ? `Run ${autoRunCount} Sessions` : session ? "New Session" : "Roll the Bones"}
-        </button>
+        <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
+          <button className="btn-main" onClick={() => run()} disabled={running} style={{ opacity: running ? 0.4 : 1 }}>
+            {autoRunCount > 1 ? `Run ${autoRunCount} Sessions` : session ? "New Session" : "Roll the Bones"}
+          </button>
+          <button
+            onClick={running ? stopLoop : startLoop}
+            style={{
+              background: running ? "rgba(202,109,109,0.15)" : "rgba(109,202,109,0.1)",
+              border: `1px solid ${running ? "rgba(202,109,109,0.5)" : "rgba(109,202,109,0.4)"}`,
+              color: running ? "#ca6d6d" : "#6dca6d",
+              fontFamily: "'Cinzel', serif", fontSize: "0.72rem", fontWeight: 700,
+              letterSpacing: "0.12em", padding: "12px 24px", cursor: "pointer",
+              borderRadius: 2, textTransform: "uppercase", transition: "all 0.2s"
+            }}
+          >
+            {running ? "Stop Loop" : "Start Loop"}
+          </button>
+        </div>
+        {running && (
+          <div style={{ fontFamily: "'Crimson Text', serif", fontSize: "0.88rem", color: "#8ab88a", fontStyle: "italic" }}>
+            {history.length} / {maxSessions} sessions · next tick in {intervalSecs}s
+          </div>
+        )}
 
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
           {/* Seed input */}
@@ -549,7 +625,7 @@ export default function CrapsSession() {
                 </div>
               </button>
               <button
-                onClick={() => { setHistory([]); setSession(null); }}
+                onClick={() => { setHistory([]); setSession(null); sessionCountRef.current = 0; stopLoop(); }}
                 style={{ background: "transparent", border: "1px solid rgba(202,109,109,0.3)", color: "#8a5a5a", fontFamily: "'Cinzel', serif", fontSize: "0.55rem", letterSpacing: "0.12em", padding: "4px 10px", cursor: "pointer", borderRadius: 2, textTransform: "uppercase", transition: "all 0.15s", marginRight: 16, flexShrink: 0 }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(202,109,109,0.7)"; e.currentTarget.style.color = "#ca6d6d"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(202,109,109,0.3)"; e.currentTarget.style.color = "#8a5a5a"; }}
