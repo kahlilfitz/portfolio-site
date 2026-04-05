@@ -121,9 +121,9 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit 
         passLineBet = 0; oddsBet = 0; point = null; pointsMade++;
       } else if (roll.total === 7) {
         const lost = passLineBet + oddsBet;
-        const net = bankroll - BUY_IN;
+        const preHandBankroll = bankroll + passLineBet + oddsBet;
         const maxExposure = passBet + Math.max(passBet * odds410, passBet * odds59, passBet * odds68);
-        const profitStop = stopAtProfit > 0 && net >= stopAtProfit;
+        const profitStop = stopAtProfit > 0 && (preHandBankroll - BUY_IN) >= stopAtProfit;
         const exposureStop = bankroll < maxExposure;
         const detail = profitStop ? `Seven out — profit target reached`
           : exposureStop ? `Seven out — insufficient funds`
