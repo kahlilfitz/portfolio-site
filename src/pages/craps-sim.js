@@ -62,7 +62,7 @@ function Die({ value, dieColor }) {
   );
 }
 
-function simulate({ passBet, odds410, odds59, odds68, seed, buyIn }) {
+function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit }) {
   const BUY_IN = buyIn;
   const MAX_ROLLS = 100;
   const rand = mulberry32(seed);
@@ -120,11 +120,13 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn }) {
         passLineBet = 0; oddsBet = 0; point = null;
       } else if (roll.total === 7) {
         const lost = passLineBet + oddsBet;
-        const detail = pastCap ? `Seven out — session closed` : `Seven out`;
+        const net = bankroll - BUY_IN;
+        const profitStop = stopAtProfit > 0 && net >= stopAtProfit;
+        const detail = pastCap ? `Seven out — session closed` : profitStop ? `Seven out — profit target reached` : `Seven out`;
         rolls.push({ roll: rollCount, dice: roll, phase: "point", result: "LOSS", detail, bankroll, net: -lost, point, pastCap });
         passLineBet = 0; oddsBet = 0; point = null;
         if (bankroll > highWater) { highWater = bankroll; highWaterRoll = rollCount; }
-        if (pastCap) break;
+        if (pastCap || profitStop) break;
       } else {
         rolls.push({ roll: rollCount, dice: roll, phase: "point", result: "NEUTRAL", detail: `${roll.total} — need ${point}`, bankroll, net: 0, point, pastCap });
       }
@@ -190,17 +192,28 @@ export default function CrapsSession() {
   const [odds68, setOdds68] = useState(5);
   const [seedInput, setSeedInput] = useState("");
   const [lastSeed, setLastSeed] = useState(null);
+  const [stopAtProfit, setStopAtProfit] = useState(0);
+  const [autoRunCount, setAutoRunCount] = useState(1);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const run = (replaySeed) => {
-    const seed = replaySeed ?? (seedInput.trim() !== "" ? parseInt(seedInput.trim()) >>> 0 : cryptoSeed());
-    const result = simulate({ passBet, odds410, odds59, odds68, seed, buyIn });
-    const sessionNum = history.length + 1;
-    const entry = { ...result, sessionNum, passBet, odds410, odds59, odds68, buyIn };
-    setSession(entry);
-    setLastSeed(seed);
-    if (!replaySeed) setHistory(prev => [...prev, entry]);
+    const count = replaySeed ? 1 : autoRunCount;
+    const baseSessionNum = history.length + 1;
+    const newEntries = [];
+
+    for (let i = 0; i < count; i++) {
+      const seed = replaySeed && i === 0 ? replaySeed :
+                   i === 0 && seedInput.trim() !== "" ? parseInt(seedInput.trim()) >>> 0 :
+                   cryptoSeed();
+      const result = simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit });
+      newEntries.push({ ...result, sessionNum: baseSessionNum + i, passBet, odds410, odds59, odds68, buyIn });
+    }
+
+    const lastEntry = newEntries[newEntries.length - 1];
+    setSession(lastEntry);
+    setLastSeed(lastEntry.seed);
+    if (!replaySeed) setHistory(prev => [...prev, ...newEntries]);
     setView("all");
-    setTimeout(() => tableRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   };
 
   const filtered = session ? (
@@ -258,7 +271,7 @@ export default function CrapsSession() {
           CRAPS TABLE
         </h1>
         <div style={{ marginTop: 10, fontFamily: "'Crimson Text', serif", color: "#8ab88a", fontSize: "0.95rem", letterSpacing: "0.08em" }}>
-          ${buyIn} Buy-In &nbsp;·&nbsp; ${passBet} Pass Line &nbsp;·&nbsp; {odds410}/{odds59}/{odds68}× Odds &nbsp;·&nbsp; 100 Roll Cap
+          ${buyIn} Buy-In &nbsp;·&nbsp; ${passBet} Pass Line &nbsp;·&nbsp; {odds410}/{odds59}/{odds68}× Odds &nbsp;·&nbsp; 100 Roll Cap{stopAtProfit > 0 ? ` · Stop +$${stopAtProfit}` : ""}
         </div>
       </div>
 
@@ -337,13 +350,41 @@ export default function CrapsSession() {
             <div style={{ fontFamily: "'Crimson Text', serif", fontSize: "0.78rem", color: "#4a7a4a", fontStyle: "italic", textAlign: "center" }}>worst-case<br/>per hand</div>
           </div>
 
+          <div style={{ width: 1, background: "rgba(212,175,55,0.15)", alignSelf: "stretch" }} />
+
+          {/* Stop at profit */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+            <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.55rem", letterSpacing: "0.25em", color: "#4a7a4a", textTransform: "uppercase", marginBottom: 6 }}>Stop at Profit</div>
+            <NumInput
+              label="On 7-Out"
+              value={stopAtProfit}
+              onChange={setStopAtProfit}
+              min={0} max={10000} step={25}
+              sublabel={stopAtProfit === 0 ? "Disabled" : `Stop if +$${stopAtProfit} on 7-out`}
+            />
+          </div>
+
+          <div style={{ width: 1, background: "rgba(212,175,55,0.15)", alignSelf: "stretch" }} />
+
+          {/* Auto-run sessions */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+            <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.55rem", letterSpacing: "0.25em", color: "#4a7a4a", textTransform: "uppercase", marginBottom: 6 }}>Auto-Run</div>
+            <NumInput
+              label="Sessions"
+              value={autoRunCount}
+              onChange={setAutoRunCount}
+              min={1} max={500} step={1}
+              sublabel={autoRunCount === 1 ? "Single session" : `${autoRunCount} sessions at once`}
+            />
+          </div>
+
         </div>
       </div>
 
       {/* Roll button + seed controls */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, paddingBottom: 36 }}>
         <button className="btn-main" onClick={() => run()}>
-          {session ? "New Session" : "Roll the Bones"}
+          {autoRunCount > 1 ? `Run ${autoRunCount} Sessions` : session ? "New Session" : "Roll the Bones"}
         </button>
 
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
@@ -389,17 +430,124 @@ export default function CrapsSession() {
         </div>
       </div>
 
+      {/* Aggregate Summary */}
+      {history.length > 0 && (() => {
+        const nets = history.map(s => s.netResult);
+        const total = nets.reduce((a, b) => a + b, 0);
+        const wins = nets.filter(n => n > 0).length;
+        const winRate = (wins / nets.length) * 100;
+        const avg = total / nets.length;
+        const sorted = [...nets].sort((a, b) => a - b);
+        const median = sorted.length % 2 === 0
+          ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
+          : sorted[Math.floor(sorted.length / 2)];
+
+        // Histogram buckets
+        const min = Math.min(...nets);
+        const max = Math.max(...nets);
+        const bucketCount = 12;
+        const bucketSize = Math.max(25, Math.ceil((max - min) / bucketCount / 25) * 25);
+        const bucketStart = Math.floor(min / bucketSize) * bucketSize;
+        const buckets = [];
+        for (let i = bucketStart; buckets.length < bucketCount + 2; i += bucketSize) {
+          buckets.push({ lo: i, hi: i + bucketSize, count: 0 });
+        }
+        nets.forEach(n => {
+          const b = buckets.find(b => n >= b.lo && n < b.hi);
+          if (b) b.count++;
+        });
+        const trimmed = buckets.filter((b, i) => {
+          if (b.count > 0) return true;
+          const prev = buckets[i - 1];
+          const next = buckets[i + 1];
+          return (prev && prev.count > 0) || (next && next.count > 0);
+        });
+        const maxCount = Math.max(...trimmed.map(b => b.count));
+
+        return (
+          <div style={{ padding: "28px 24px", borderBottom: "1px solid rgba(212,175,55,0.15)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
+              <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.72rem", letterSpacing: "0.2em", color: "#5a8a5a", textTransform: "uppercase" }}>Summary</div>
+              <div style={{ flex: 1, height: 1, background: "rgba(212,175,55,0.12)" }} />
+            </div>
+
+            {/* Stat cards */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 28, justifyContent: "center" }}>
+              {[
+                { label: "Win Rate", value: `${winRate.toFixed(1)}%`, color: winRate >= 50 ? "#6dca6d" : "#ca6d6d" },
+                { label: "Avg Net", value: avg >= 0 ? `+$${fmt(avg)}` : `-$${fmt(Math.abs(avg))}`, color: avg >= 0 ? "#6dca6d" : "#ca6d6d" },
+                { label: "Median Net", value: median >= 0 ? `+$${fmt(median)}` : `-$${fmt(Math.abs(median))}`, color: median >= 0 ? "#6dca6d" : "#ca6d6d" },
+                { label: "Total Net", value: total >= 0 ? `+$${fmt(total)}` : `-$${fmt(Math.abs(total))}`, color: total >= 0 ? "#6dca6d" : "#ca6d6d" },
+                { label: "Best", value: `+$${fmt(Math.max(...nets))}`, color: "#6dca6d" },
+                { label: "Worst", value: `${Math.min(...nets) >= 0 ? "+" : "-"}$${fmt(Math.abs(Math.min(...nets)))}`, color: "#ca6d6d" },
+              ].map(({ label, value, color }) => (
+                <div key={label} style={{
+                  flex: "1 1 100px", minWidth: 100, maxWidth: 160,
+                  background: "rgba(0,0,0,0.25)", border: "1px solid rgba(212,175,55,0.15)",
+                  borderRadius: 3, padding: "14px 16px", textAlign: "center"
+                }}>
+                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: "1.1rem", fontWeight: 700, color }}>{value}</div>
+                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.55rem", letterSpacing: "0.18em", color: "#4a7a4a", textTransform: "uppercase", marginTop: 5 }}>{label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Distribution histogram */}
+            {trimmed.length > 1 && (
+              <div>
+                <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.58rem", letterSpacing: "0.18em", color: "#4a7a4a", textTransform: "uppercase", marginBottom: 10 }}>Outcome Distribution</div>
+                <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 72 }}>
+                  {trimmed.map((b, i) => {
+                    const height = maxCount > 0 ? Math.max(2, (b.count / maxCount) * 72) : 2;
+                    const isProfit = b.lo >= 0;
+                    const isLoss = b.hi <= 0;
+                    const barColor = isProfit ? "rgba(109,202,109,0.65)" : isLoss ? "rgba(202,109,109,0.65)" : "rgba(212,175,55,0.5)";
+                    const borderColor = isProfit ? "#6dca6d" : isLoss ? "#ca6d6d" : "#d4af37";
+                    return (
+                      <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, height: "100%", justifyContent: "flex-end" }}>
+                        {b.count > 0 && (
+                          <div style={{ fontFamily: "monospace", fontSize: "0.6rem", color: "#5a7a5a", lineHeight: 1 }}>{b.count}</div>
+                        )}
+                        <div style={{
+                          width: "100%", height, background: barColor,
+                          border: `1px solid ${borderColor}`, borderRadius: "2px 2px 0 0",
+                          opacity: b.count === 0 ? 0.15 : 1
+                        }} />
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{ display: "flex", gap: 3, marginTop: 4 }}>
+                  {trimmed.map((b, i) => (
+                    <div key={i} style={{ flex: 1, textAlign: "center", fontFamily: "monospace", fontSize: "0.52rem", color: "#3a5a3a", lineHeight: 1.2 }}>
+                      {b.lo >= 0 ? `+${b.lo}` : b.lo}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
       {/* Session History Leaderboard */}
       {history.length > 0 && (() => {
         const bestNet = Math.max(...history.map(s => s.netResult));
         const bestPeak = Math.max(...history.map(s => s.highWater));
         return (
-          <div ref={historyRef} style={{ padding: "0 16px 32px", borderBottom: "1px solid rgba(212,175,55,0.15)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 14 }}>
-              <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.72rem", letterSpacing: "0.2em", color: "#5a8a5a", textTransform: "uppercase" }}>Session History</div>
-              <div style={{ flex: 1, height: 1, background: "rgba(212,175,55,0.12)" }} />
-              <div style={{ fontFamily: "'Crimson Text', serif", fontSize: "0.82rem", color: "#4a7a4a", fontStyle: "italic" }}>{history.length} session{history.length !== 1 ? "s" : ""} played</div>
-            </div>
+          <div ref={historyRef} style={{ borderBottom: "1px solid rgba(212,175,55,0.15)" }}>
+            <button
+              onClick={() => setHistoryOpen(o => !o)}
+              style={{ width: "100%", background: "none", border: "none", cursor: "pointer", padding: "16px 16px" }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.72rem", letterSpacing: "0.2em", color: "#5a8a5a", textTransform: "uppercase" }}>Session History</div>
+                <div style={{ flex: 1, height: 1, background: "rgba(212,175,55,0.12)" }} />
+                <div style={{ fontFamily: "'Crimson Text', serif", fontSize: "0.82rem", color: "#4a7a4a", fontStyle: "italic" }}>{history.length} session{history.length !== 1 ? "s" : ""}</div>
+                <div style={{ fontFamily: "'Cinzel', serif", fontSize: "0.65rem", color: "#5a7a5a", marginLeft: 4 }}>{historyOpen ? "▲" : "▼"}</div>
+              </div>
+            </button>
+            {historyOpen && <div style={{ padding: "0 16px 24px" }}>
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 480 }}>
                 <thead>
@@ -410,7 +558,7 @@ export default function CrapsSession() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[...history].reverse().map((s, ri) => {
+                  {[...history].reverse().slice(0, 20).map((s, ri) => {
                     const isBestNet = s.netResult === bestNet;
                     const isBestPeak = s.highWater === bestPeak;
                     const isCurrent = s.sessionNum === session?.sessionNum;
@@ -462,6 +610,12 @@ export default function CrapsSession() {
                 </tfoot>
               </table>
             </div>
+            {history.length > 20 && (
+              <div style={{ fontFamily: "'Crimson Text', serif", fontSize: "0.78rem", color: "#3a5a3a", fontStyle: "italic", textAlign: "center", paddingTop: 10 }}>
+                showing 20 of {history.length} sessions
+              </div>
+            )}
+            </div>}
           </div>
         );
       })()}
