@@ -639,6 +639,7 @@ export default function CrapsSession() {
             <div style={{ display: "flex", alignItems: "center" }}>
               <button
                 onClick={() => setHistoryOpen(o => !o)}
+                aria-label="Toggle session history"
                 style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "16px 16px" }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
