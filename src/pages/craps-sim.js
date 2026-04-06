@@ -856,12 +856,12 @@ export default function CrapsSession() {
                           {r.detail}
                           {isPeak && <span style={{ marginLeft: 8, fontFamily: "'Cinzel', serif", fontSize: "0.55rem", letterSpacing: "0.15em", color: "#d4af37", verticalAlign: "middle", border: "1px solid rgba(212,175,55,0.5)", padding: "1px 5px", borderRadius: 2 }}>PEAK</span>}
                         </td>
-                        <td style={{ padding: "9px 12px", fontFamily: "'Cinzel', serif", fontSize: "0.92rem", color: r.bankroll >= 500 ? "#c8dfa8" : "#bf8f7f" }}>${fmt(r.bankroll)}</td>
+                        <td style={{ padding: "9px 12px", fontFamily: "'Cinzel', serif", fontSize: "0.92rem", color: r.bankroll >= session.buyIn ? "#c8dfa8" : "#bf8f7f" }}>${fmt(r.bankroll)}</td>
                         <td style={{ padding: "9px 12px", fontFamily: "'Crimson Text', serif", fontSize: "0.95rem",
-                          color: r.net > 0 ? "#6dca6d" : r.net < 0 ? "#ca6d6d" : "#5a7a5a",
-                          fontWeight: r.net !== 0 ? 600 : 400
+                          color: (r.bankroll - session.buyIn) > 0 ? "#6dca6d" : (r.bankroll - session.buyIn) < 0 ? "#ca6d6d" : "#5a7a5a",
+                          fontWeight: r.bankroll !== session.buyIn ? 600 : 400
                         }}>
-                          {r.net > 0 ? `+$${fmt(r.net)}` : r.net < 0 ? `-$${fmt(Math.abs(r.net))}` : "—"}
+                          {(() => { const profit = r.bankroll - session.buyIn; return profit > 0 ? `+$${fmt(profit)}` : profit < 0 ? `-$${fmt(Math.abs(profit))}` : "—"; })()}
                         </td>
                       </tr>
                     );
