@@ -85,6 +85,7 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit 
   let oddsBet = 0;
   let pastCap = false;
   let pointsMade = 0;
+  let sevenOuts = 0;
 
   while (bankroll >= passBet) {
     if (rollCount >= MAX_ROLLS) pastCap = true;
@@ -129,7 +130,7 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit 
           : pastCap ? `Seven out — session closed`
           : `Seven out`;
         rolls.push({ roll: rollCount, dice: roll, phase: "point", result: "LOSS", detail, bankroll, net: -lost, point, pastCap });
-        passLineBet = 0; oddsBet = 0; point = null;
+        passLineBet = 0; oddsBet = 0; point = null; sevenOuts++;
         if (bankroll > highWater) { highWater = bankroll; highWaterRoll = rollCount; }
         if (profitStop || exposureStop || pastCap) break;
       } else {
@@ -142,7 +143,8 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit 
 
   if (point !== null) bankroll += passLineBet + oddsBet;
 
-  return { rolls, finalBankroll: bankroll, highWater, highWaterRoll, totalRolls: rollCount, netResult: bankroll - BUY_IN, seed, pointsMade };
+  const ev = -(0.0141 * passBet * (pointsMade + sevenOuts));
+  return { rolls, finalBankroll: bankroll, highWater, highWaterRoll, totalRolls: rollCount, netResult: bankroll - BUY_IN, seed, pointsMade, ev };
 }
 
 function NumInput({ label, sublabel, value, onChange, min = 0, max = 100, step = 1 }) {
@@ -467,6 +469,21 @@ export default function CrapsSession() {
             {autoRunCount > 1 ? `Run ${autoRunCount} Sessions` : session ? "New Session" : "Roll the Bones"}
           </button>
           <button
+            onClick={() => { setHistory([]); setSession(null); sessionCountRef.current = 0; stopLoop(); }}
+            disabled={running}
+            style={{
+              background: "transparent", border: "1px solid rgba(202,109,109,0.3)", color: "#8a5a5a",
+              fontFamily: "'Cinzel', serif", fontSize: "0.72rem", fontWeight: 700,
+              letterSpacing: "0.12em", padding: "12px 24px", cursor: "pointer",
+              borderRadius: 2, textTransform: "uppercase", transition: "all 0.2s",
+              opacity: running ? 0.4 : 1
+            }}
+            onMouseEnter={e => { if (!running) { e.currentTarget.style.borderColor = "rgba(202,109,109,0.7)"; e.currentTarget.style.color = "#ca6d6d"; }}}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(202,109,109,0.3)"; e.currentTarget.style.color = "#8a5a5a"; }}
+          >
+            Clear
+          </button>
+          <button
             onClick={running ? stopLoop : startLoop}
             style={{
               background: running ? "rgba(202,109,109,0.15)" : "rgba(109,202,109,0.1)",
@@ -536,6 +553,7 @@ export default function CrapsSession() {
         const wins = nets.filter(n => n > 0).length;
         const winRate = (wins / nets.length) * 100;
         const avg = total / nets.length;
+        const avgEv = history.reduce((sum, s) => sum + s.ev, 0) / history.length;
         const sorted = [...nets].sort((a, b) => a - b);
         const median = sorted.length % 2 === 0
           ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
@@ -575,6 +593,7 @@ export default function CrapsSession() {
               {[
                 { label: "Win Rate", value: `${winRate.toFixed(1)}%`, color: winRate >= 50 ? "#6dca6d" : "#ca6d6d" },
                 { label: "Avg Net", value: avg >= 0 ? `+$${fmt(avg)}` : `-$${fmt(Math.abs(avg))}`, color: avg >= 0 ? "#6dca6d" : "#ca6d6d" },
+                { label: "Avg EV", value: avgEv >= 0 ? `+$${fmt(avgEv)}` : `-$${fmt(Math.abs(avgEv))}`, color: "#8a9aba" },
                 { label: "Median Net", value: median >= 0 ? `+$${fmt(median)}` : `-$${fmt(Math.abs(median))}`, color: median >= 0 ? "#6dca6d" : "#ca6d6d" },
                 { label: "Total Net", value: total >= 0 ? `+$${fmt(total)}` : `-$${fmt(Math.abs(total))}`, color: total >= 0 ? "#6dca6d" : "#ca6d6d" },
                 { label: "Best", value: `+$${fmt(Math.max(...nets))}`, color: "#6dca6d" },
