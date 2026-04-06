@@ -85,7 +85,6 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit 
   let oddsBet = 0;
   let pastCap = false;
   let pointsMade = 0;
-  let sevenOuts = 0;
 
   while (bankroll >= passBet) {
     if (rollCount >= MAX_ROLLS) pastCap = true;
@@ -130,7 +129,7 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit 
           : pastCap ? `Seven out — session closed`
           : `Seven out`;
         rolls.push({ roll: rollCount, dice: roll, phase: "point", result: "LOSS", detail, bankroll, net: -lost, point, pastCap });
-        passLineBet = 0; oddsBet = 0; point = null; sevenOuts++;
+        passLineBet = 0; oddsBet = 0; point = null;
         if (bankroll > highWater) { highWater = bankroll; highWaterRoll = rollCount; }
         if (profitStop || exposureStop || pastCap) break;
       } else {
@@ -143,9 +142,7 @@ function simulate({ passBet, odds410, odds59, odds68, seed, buyIn, stopAtProfit 
 
   if (point !== null) bankroll += passLineBet + oddsBet;
 
-  const decisions = pointsMade + sevenOuts;
-  const ev = -(0.0141 * passBet * decisions);
-  return { rolls, finalBankroll: bankroll, highWater, highWaterRoll, totalRolls: rollCount, netResult: bankroll - BUY_IN, seed, pointsMade, sevenOuts, ev };
+  return { rolls, finalBankroll: bankroll, highWater, highWaterRoll, totalRolls: rollCount, netResult: bankroll - BUY_IN, seed, pointsMade };
 }
 
 function NumInput({ label, sublabel, value, onChange, min = 0, max = 100, step = 1 }) {
@@ -539,7 +536,7 @@ export default function CrapsSession() {
         const wins = nets.filter(n => n > 0).length;
         const winRate = (wins / nets.length) * 100;
         const avg = total / nets.length;
-        const avgEv = history.reduce((sum, s) => sum + s.ev, 0) / history.length;
+        const ev = -(0.0141 * buyIn);
         const sorted = [...nets].sort((a, b) => a - b);
         const median = sorted.length % 2 === 0
           ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
@@ -579,7 +576,7 @@ export default function CrapsSession() {
               {[
                 { label: "Win Rate", value: `${winRate.toFixed(1)}%`, color: winRate >= 50 ? "#6dca6d" : "#ca6d6d" },
                 { label: "Avg Net", value: avg >= 0 ? `+$${fmt(avg)}` : `-$${fmt(Math.abs(avg))}`, color: avg >= 0 ? "#6dca6d" : "#ca6d6d" },
-                { label: "Avg EV", value: avgEv >= 0 ? `+$${fmt(avgEv)}` : `-$${fmt(Math.abs(avgEv))}`, color: "#8a9aba" },
+                { label: "Exp. Value", value: `−$${fmt(Math.abs(ev))}`, color: "#8a9aba" },
                 { label: "Median Net", value: median >= 0 ? `+$${fmt(median)}` : `-$${fmt(Math.abs(median))}`, color: median >= 0 ? "#6dca6d" : "#ca6d6d" },
                 { label: "Total Net", value: total >= 0 ? `+$${fmt(total)}` : `-$${fmt(Math.abs(total))}`, color: total >= 0 ? "#6dca6d" : "#ca6d6d" },
                 { label: "Best", value: `+$${fmt(Math.max(...nets))}`, color: "#6dca6d" },
