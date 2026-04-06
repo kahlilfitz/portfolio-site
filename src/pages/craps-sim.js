@@ -469,6 +469,21 @@ export default function CrapsSession() {
             {autoRunCount > 1 ? `Run ${autoRunCount} Sessions` : session ? "New Session" : "Roll the Bones"}
           </button>
           <button
+            onClick={() => { setHistory([]); setSession(null); sessionCountRef.current = 0; stopLoop(); }}
+            disabled={running}
+            style={{
+              background: "transparent", border: "1px solid rgba(202,109,109,0.3)", color: "#8a5a5a",
+              fontFamily: "'Cinzel', serif", fontSize: "0.72rem", fontWeight: 700,
+              letterSpacing: "0.12em", padding: "12px 24px", cursor: "pointer",
+              borderRadius: 2, textTransform: "uppercase", transition: "all 0.2s",
+              opacity: running ? 0.4 : 1
+            }}
+            onMouseEnter={e => { if (!running) { e.currentTarget.style.borderColor = "rgba(202,109,109,0.7)"; e.currentTarget.style.color = "#ca6d6d"; }}}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(202,109,109,0.3)"; e.currentTarget.style.color = "#8a5a5a"; }}
+          >
+            Clear
+          </button>
+          <button
             onClick={running ? stopLoop : startLoop}
             style={{
               background: running ? "rgba(202,109,109,0.15)" : "rgba(109,202,109,0.1)",
